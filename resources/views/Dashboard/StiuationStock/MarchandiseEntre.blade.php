@@ -58,14 +58,14 @@
                 <tr>
                     <th rowspan="2">Date</th>
                     @foreach ($clientsMarchEntree as $client)
-                        <th colspan="2">{{ $client }}</th>
+                        <th >{{ $client }}</th>
                     @endforeach
                     <th rowspan="2">Total</th>
                 </tr>
                 <tr>
                     @foreach ($clientsMarchEntree as $client)
                         <th>nombre</th>
-                        <th>Cumul</th>
+                        {{-- <th>Cumul</th> --}}
                     @endforeach
                    {{--  <th>nombre</th> --}}
                     {{-- <th>Cumul</th> --}}
@@ -80,7 +80,7 @@
                         @foreach ($clientsMarchEntree as $client)
 
                             <td>{{intval($clientsData[$client]['nombre'])  }}</td>
-                            <td>{{intval($clientsData[$client]['Cuml'])  }}</td>
+                            {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
 
                         @endforeach
                         <td>{{intval($totalsMarchEntree[$date]['totalNombre'])  }}</td>
@@ -100,10 +100,10 @@
                             $sumCuml += $clientsData[$client]['Cuml'];
                         }
                         ?>
-                        <td colspan="2">{{ $sumNombre }}</td>
+                        <td >{{ $sumNombre }}</td>
                         {{-- <td >{{ $sumCuml }}</td> --}}
                     @endforeach
-                    <td colspan="2">{{ $totalsMarchEntree['grandTotalNombre'] }}</td>
+                    <td >{{ $totalsMarchEntree['grandTotalNombre'] }}</td>
                    {{--  <td >{{ $totalsMarchEntree['grandTotalCuml'] }}</td> --}}
                 </tr>
             </tfoot>

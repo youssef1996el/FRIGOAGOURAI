@@ -18,6 +18,7 @@ use App\Http\Controllers\CompanieController;
 
 Route::get('/', function () {
     return view('auth.login');
+    /*  return view('Expiring'); */
 });
 
 Auth::routes();

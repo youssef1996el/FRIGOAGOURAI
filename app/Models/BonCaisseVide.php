@@ -13,5 +13,7 @@ class BonCaisseVide extends Model
     protected $fillable =
     [
         'number',
+        'idcaissevide',
+        'idcompanie'
     ];
 }

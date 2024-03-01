@@ -118,18 +118,33 @@ class StockController extends Controller
         if(count($request->all()) == 0)
         {
             $CompagnieIsActive = DB::select('select id from compagnies where active = "active" ');
-            $queryCaisseVide = DB::table('table_cumlcaissevides')
+
+            /*$queryCaisseVide = DB::table('table_cumlcaissevides')
             ->join('clients', 'table_cumlcaissevides.idclient', '=', 'clients.id')
             ->select(
                 DB::raw('DATE_FORMAT(table_cumlcaissevides.dateoperation, "%d-%m-%Y") as dateoperation'),
                  DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlcaissevides.cuml', 'table_cumlcaissevides.nombre')
             ->where('table_cumlcaissevides.compagnie','=',$CompagnieIsActive[0]->id)
             ->orderBy('table_cumlcaissevides.dateoperation', 'asc')
+            ->get();*/
+
+             $queryCaisseVide = DB::table('table_cumlcaissevides as tcs')
+            ->join('clients', 'tcs.idclient', '=', 'clients.id')
+            ->select(
+                DB::raw('DATE_FORMAT(tcs.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tcs.cuml) as cuml'),
+                DB::raw('SUM(tcs.nombre) as nombre')
+            )
+            ->where('tcs.compagnie', '=', $CompagnieIsActive[0]->id)
+            ->groupBy('clients.id', DB::raw('DATE(tcs.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tcs.dateoperation)'))
             ->get();
         }
         else
         {
-            $queryCaisseVide = DB::table('table_cumlcaissevides')
+
+            /*$queryCaisseVide = DB::table('table_cumlcaissevides')
                 ->join('clients', 'table_cumlcaissevides.idclient', '=', 'clients.id')
                 ->select(
                     DB::raw('DATE_FORMAT(table_cumlcaissevides.dateoperation, "%d-%m-%Y") as dateoperation'),
@@ -137,7 +152,21 @@ class StockController extends Controller
                      'table_cumlcaissevides.cuml', 'table_cumlcaissevides.nombre')
                 ->where('table_cumlcaissevides.compagnie','=',$request->compagnie)
                 ->orderBy('table_cumlcaissevides.dateoperation', 'asc')
-                ->get();
+                ->get();*/
+
+
+                 $queryCaisseVide = DB::table('table_cumlcaissevides as tcs')
+                    ->join('clients', 'tcs.idclient', '=', 'clients.id')
+                    ->select(
+                        DB::raw('DATE_FORMAT(tcs.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                        DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                        DB::raw('SUM(tcs.cuml) as cuml'),
+                        DB::raw('SUM(tcs.nombre) as nombre')
+                    )
+                    ->where('tcs.compagnie', '=', $request->compagnie)
+                    ->groupBy('clients.id', DB::raw('DATE(tcs.dateoperation)'))
+                    ->orderBy(DB::raw('DATE(tcs.dateoperation)'))
+                    ->get();
         }
 
 
@@ -185,27 +214,55 @@ class StockController extends Controller
         // ُentre macharchnadise
         $Compagnie = DB::select('select * from compagnies order by active asc ');
         $perPage = 10;
+
         if(count($request->all()) == 0)
         {
             $CompagnieIsActive = DB::select('select id from compagnies where active = "active" ');
-            $query = DB::table('table_cumlmarchandiseentree')
+            /*$query = DB::table('table_cumlmarchandiseentree')
             ->join('clients', 'table_cumlmarchandiseentree.idclient', '=', 'clients.id')
             ->select(
                 DB::raw('DATE_FORMAT(table_cumlmarchandiseentree.dateoperation, "%d-%m-%Y") as dateoperation'),
                  DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlmarchandiseentree.cuml', 'table_cumlmarchandiseentree.nombre')
             ->where('table_cumlmarchandiseentree.compagnie','=',$CompagnieIsActive[0]->id)
             ->orderBy('table_cumlmarchandiseentree.dateoperation', 'asc')
+            ->get();*/
+
+            $query = DB::table('table_cumlmarchandiseentree as tce')
+            ->join('clients', 'tce.idclient', '=', 'clients.id')
+            ->select(
+                DB::raw('DATE_FORMAT(tce.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tce.cuml) as cuml'),
+                DB::raw('SUM(tce.nombre) as nombre')
+            )
+            ->where('tce.compagnie', '=', $CompagnieIsActive[0]->id)
+            ->groupBy('clients.id', DB::raw('DATE(tce.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tce.dateoperation)'))
             ->get();
         }
         else
         {
-            $query = DB::table('table_cumlmarchandiseentree')
+            /*$query = DB::table('table_cumlmarchandiseentree')
             ->join('clients', 'table_cumlmarchandiseentree.idclient', '=', 'clients.id')
             ->select(
                 DB::raw('DATE_FORMAT(table_cumlmarchandiseentree.dateoperation, "%d-%m-%Y") as dateoperation'),
                  DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlmarchandiseentree.cuml', 'table_cumlmarchandiseentree.nombre')
             ->where('table_cumlmarchandiseentree.compagnie','=',$request->compagnie)
             ->orderBy('table_cumlmarchandiseentree.dateoperation', 'asc')
+            ->get();
+            */
+
+            $query = DB::table('table_cumlmarchandiseentree as tce')
+            ->join('clients', 'tce.idclient', '=', 'clients.id')
+            ->select(
+                DB::raw('DATE_FORMAT(tce.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tce.cuml) as cuml'),
+                DB::raw('SUM(tce.nombre) as nombre')
+            )
+            ->where('tce.compagnie', '=', $request->compagnie)
+            ->groupBy('clients.id', DB::raw('DATE(tce.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tce.dateoperation)'))
             ->get();
         }
 
@@ -258,26 +315,53 @@ class StockController extends Controller
         if(count($request->all()) == 0)
         {
             $CompagnieIsActive = DB::select('select id from compagnies where active = "active" ');
-            $query = DB::table('table_cumlmarchandisesortie')
-            ->join('clients', 'table_cumlmarchandisesortie.idclient', '=', 'clients.id')
+
+
+
+
+
+            $query = DB::table('table_cumlmarchandisesortie as tcs')
+            ->join('clients', 'tcs.idclient', '=', 'clients.id')
             ->select(
-                DB::raw('DATE_FORMAT(table_cumlmarchandisesortie.dateoperation, "%d-%m-%Y") as dateoperation'),
-                 DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'),
-                  'table_cumlmarchandisesortie.cuml', 'table_cumlmarchandisesortie.nombre')
-            ->where('table_cumlmarchandisesortie.compagnie','=',$CompagnieIsActive[0]->id)
-            ->orderBy('table_cumlmarchandisesortie.dateoperation', 'asc')
+                DB::raw('DATE_FORMAT(tcs.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tcs.cuml) as cuml'),
+                DB::raw('SUM(tcs.nombre) as nombre')
+            )
+            ->where('tcs.compagnie', '=', $CompagnieIsActive[0]->id)
+            ->groupBy('clients.id', DB::raw('DATE(tcs.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tcs.dateoperation)'))
             ->get();
         }
         else
         {
-            $query = DB::table('table_cumlmarchandisesortie')
+           /* $query = DB::table('table_cumlmarchandisesortie')
             ->join('clients', 'table_cumlmarchandisesortie.idclient', '=', 'clients.id')
             ->select(
                 DB::raw('DATE_FORMAT(table_cumlmarchandisesortie.dateoperation, "%d-%m-%Y") as dateoperation'),
                  DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlmarchandisesortie.cuml', 'table_cumlmarchandisesortie.nombre')
             ->where('table_cumlmarchandisesortie.compagnie','=',$request->compagnie)
             ->orderBy('table_cumlmarchandisesortie.dateoperation', 'asc')
+            ->get();*/
+
+
+
+
+
+             $query = DB::table('table_cumlmarchandisesortie as tcs')
+            ->join('clients', 'tcs.idclient', '=', 'clients.id')
+            ->select(
+                DB::raw('DATE_FORMAT(tcs.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tcs.cuml) as cuml'),
+                DB::raw('SUM(tcs.nombre) as nombre')
+            )
+            ->where('tcs.compagnie', '=', $request->compagnie)
+            ->groupBy('clients.id', DB::raw('DATE(tcs.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tcs.dateoperation)'))
             ->get();
+
+
         }
 
 
@@ -361,27 +445,54 @@ class StockController extends Controller
         {
 
             $CompagnieIsActive = DB::select('select id from compagnies where active = "active" ');
-            $queryCaisseRetour = DB::table('table_cumlcaisseretours')
+
+           /* $queryCaisseRetour = DB::table('table_cumlcaisseretours')
             ->join('clients', 'table_cumlcaisseretours.idclient', '=', 'clients.id')
             ->select(
                 DB::raw('DATE_FORMAT(table_cumlcaisseretours.dateoperation, "%d-%m-%Y") as dateoperation'),
                  DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlcaisseretours.cuml', 'table_cumlcaisseretours.nombre')
             ->where('table_cumlcaisseretours.compagnie','=',$CompagnieIsActive[0]->id)
             ->orderBy('dateoperation', 'asc')
+            ->get();*/
+
+              $queryCaisseRetour= DB::table('table_cumlcaisseretours as tcs')
+            ->join('clients', 'tcs.idclient', '=', 'clients.id')
+            ->select(
+                DB::raw('DATE_FORMAT(tcs.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tcs.cuml) as cuml'),
+                DB::raw('SUM(tcs.nombre) as nombre')
+            )
+            ->where('tcs.compagnie', '=', $CompagnieIsActive[0]->id)
+            ->groupBy('clients.id', DB::raw('DATE(tcs.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tcs.dateoperation)'))
             ->get();
-            /* ->paginate($perPage); */
         }
         else
         {
-            $queryCaisseRetour = DB::table('table_cumlcaisseretours')
+           /* $queryCaisseRetour = DB::table('table_cumlcaisseretours')
             ->join('clients', 'table_cumlcaisseretours.idclient', '=', 'clients.id')
             ->select(
                 DB::raw('DATE_FORMAT(table_cumlcaisseretours.dateoperation, "%d-%m-%Y") as dateoperation'),
                  DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlcaisseretours.cuml', 'table_cumlcaisseretours.nombre')
             ->where('table_cumlcaisseretours.compagnie','=',$request->compagnie)
             ->orderBy('dateoperation', 'asc')
+            ->get();*/
+
+
+
+            $queryCaisseRetour= DB::table('table_cumlcaisseretours as tcs')
+            ->join('clients', 'tcs.idclient', '=', 'clients.id')
+            ->select(
+                DB::raw('DATE_FORMAT(tcs.dateoperation, "%d-%m-%Y") AS dateoperation'),
+                DB::raw('CONCAT(clients.nom, " ", clients.prenom) AS client'),
+                DB::raw('SUM(tcs.cuml) as cuml'),
+                DB::raw('SUM(tcs.nombre) as nombre')
+            )
+            ->where('tcs.compagnie', '=', $request->compagnie)
+            ->groupBy('clients.id', DB::raw('DATE(tcs.dateoperation)'))
+            ->orderBy(DB::raw('DATE(tcs.dateoperation)'))
             ->get();
-            /* ->paginate($perPage); */
         }
 
         $clientsCaisseRetour = $queryCaisseRetour->pluck('client')->unique()->toArray();
@@ -411,43 +522,25 @@ class StockController extends Controller
         $totalsCaisseRetour['grandTotalNombre'] = array_sum(array_column($totalsCaisseRetour, 'totalNombre'));
         $totalsCaisseRetour['grandTotalCuml'] = array_sum(array_column($totalsCaisseRetour, 'totalCuml'));
         //////////////////////////////////////
-        // Caisse Retour
-        /* $queryCaisseRetour = DB::select('select t.dateoperation,concat(c.nom," ",c.prenom) as client , cuml,nombre
-        from table_cumlcaisseretours t,clients c where t.idclient = c.id
-        order by dateoperation asc;');
-        $clientsCaisseRetour = array_unique(array_column($queryCaisseRetour, 'client'));
-        $dataCaisseRetour = [];
-        $totalsCaisseRetour = [];
-        foreach ($queryCaisseRetour as $item) {
-            if (!isset($dataCaisseRetour[$item->dateoperation][$item->client])) {
-                foreach ($clientsCaisseRetour as $client) {
-                    $dataCaisseRetour[$item->dateoperation][$client] = [
-                        'nombre' => 0,
-                        'Cuml' => 0,
-                    ];
-                }
+        $sumByDate = [];
+
+        foreach ($dataCaisseRetour as $date => $values) {
+            $sum = 0;
+            foreach ($values as $item) {
+                $sum += (float) $item['nombre']; // Convert to float for numerical addition
             }
+            $sumByDate[$date] = $sum;
+        }
 
-            $dataCaisseRetour[$item->dateoperation][$item->client]['nombre'] = $item->nombre;
-            $dataCaisseRetour[$item->dateoperation][$item->client]['Cuml'] = $item->cuml;
-
-            $totalsCaisseRetour[$item->dateoperation]['totalNombre'] = isset($totalsCaisseRetour[$item->dateoperation]['totalNombre'])
-                ? $totalsCaisseRetour[$item->dateoperation]['totalNombre'] + $item->nombre
-                : $item->nombre;
-
-            $totalsCaisseRetour[$item->dateoperation]['totalCuml'] = isset($totalsCaisseRetour[$item->dateoperation]['totalCuml'])
-                ? $totalsCaisseRetour[$item->dateoperation]['totalCuml'] + $item->cuml
-                : $item->cuml;
-        } */
         return view('Dashboard.StiuationStock.RetourCaisse')
-       /*  ->with('dataCaisseRetour',$dataCaisseRetour)
-        ->with('clientsCaisseRetour',$clientsCaisseRetour)
-        ->with('totalsCaisseRetour',$totalsCaisseRetour) */
+
         ->with('Compagnie',$Compagnie)
         ->with('dataCaisseRetour',$dataCaisseRetour)
         ->with('clientsCaisseRetour',$clientsCaisseRetour)
         ->with('totalsCaisseRetour',$totalsCaisseRetour)
-        ->with('queryCaisseRetour',$queryCaisseRetour);
+        ->with('queryCaisseRetour',$queryCaisseRetour)
+        ->with('totalSum',array_sum($sumByDate))
+        ->with('sumByDate',$sumByDate);
     }
 
     public function bilangenrale(Request $request)

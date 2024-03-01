@@ -47,10 +47,10 @@ class MarchandiseSortieController extends Controller
 
     public function StoreTmpMarchandiseSortie(Request $request)
     {
-        $checkProduitExiste = DB::select("select id,count(*) as c from TmpMarchandiseSortie where produit = ?",[$request->produit]);
+        $checkProduitExiste = DB::select("select id,count(*) as c from tmpmarchandisesortie where produit = ?",[$request->produit]);
         if($checkProduitExiste[0]->c != 0)
         {
-            $updateNbBox = DB::select("update TmpMarchandiseSortie set nbbox = nbbox + ? where  id = ?",
+            $updateNbBox = DB::select("update tmpmarchandisesortie set nbbox = nbbox + ? where  id = ?",
             [$request->nbbox,$checkProduitExiste[0]->id]);
 
             return response()->json([
@@ -121,8 +121,8 @@ class MarchandiseSortieController extends Controller
 
     public function StoreMarchandiseSortie(Request $request)
     {
-        $GetDaTaFromTmp = DB::select("select * from TmpMarchandiseSortie where idclient = ? and iduser = ?",[$request->idclient,Auth::user()->id]);
-        $totalSortie = DB::select("select sum(nbbox) as total from TmpMarchandiseSortie where idclient = ? and iduser = ?",[$request->idclient,Auth::user()->id]);
+        $GetDaTaFromTmp = DB::select("select * from tmpmarchandisesortie where idclient = ? and iduser = ?",[$request->idclient,Auth::user()->id]);
+        $totalSortie = DB::select("select sum(nbbox) as total from tmpmarchandisesortie where idclient = ? and iduser = ?",[$request->idclient,Auth::user()->id]);
         $idCompagnieIsActive = DB::select('select id  from compagnies where active ="active"');
         $StoreMarchandiseSortie = MarchandiseSortie::create([
             'totalsortie'           => (int)$totalSortie[0]->total,
@@ -133,6 +133,29 @@ class MarchandiseSortieController extends Controller
             'cin'                    => $GetDaTaFromTmp[0]->cin,
             'compagnie'               => $idCompagnieIsActive[0]->id
         ]);
+
+        $checkBonMarchSortie = DB::select("select count(*) as c from bonmarchandisesortie where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+        if($checkBonMarchSortie[0]->c >0)
+        {
+           $getNomberBon = DB::select("select max(number)+1 as number from bonmarchandisesortie where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+           $DataBonMarchSortie =
+           [
+                'number'                => $getNomberBon[0]->number,
+                'idmarchandisesortie'   => $StoreMarchandiseSortie->id,
+                'idcompanie'            => $idCompagnieIsActive[0]->id,
+           ];
+           $BonMarchSortie = DB::table('bonmarchandisesortie')->insert($DataBonMarchSortie);
+        }
+        else
+        {
+            $DataBonMarchSortie =
+            [
+                'number'               => 1,
+                'idmarchandisesortie'  => $StoreMarchandiseSortie->id,
+                'idcompanie'           => $idCompagnieIsActive[0]->id,
+            ];
+            $BonMarchSortie = DB::table('bonmarchandisesortie')->insert($DataBonMarchSortie);
+        }
 
         // 1- check client in table cumlVide
         $idCompagnieIsActive = DB::select("select id from compagnies where active = 'active' ");
@@ -152,7 +175,7 @@ class MarchandiseSortieController extends Controller
         }
         else
         {
-            $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlmarchandisesortie where idclient= ?',[$request->idclient]);
+            $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlmarchandisesortie where idclient= ? and compagnie = ?',[$request->idclient,$idCompagnieIsActive[0]->id]);
             $cumlFinale = $getLastCuml[0]->cuml + (int)$totalSortie[0]->total;
             $CumlCaisseMarchSortie = CumlMarchandiseSortie::create([
                 'dateoperation'     => \Carbon\Carbon::now()->format('Y-m-d'),
@@ -245,10 +268,7 @@ class MarchandiseSortieController extends Controller
     public function ExtractBonMarchandiseSortie($id)
     {
 
-        $getMaxNumberBon = DB::select('SELECT LPAD(IFNULL(MAX(CAST(number AS UNSIGNED))+1, 1), 4, "0") AS number FROM bonmarchandisesortie');
-        $Bons = BonMarchandiseSortie::create([
-            'number'   => $getMaxNumberBon[0]->number,
-        ]);
+       $getMaxNumberBon = DB::select('select number from bonmarchandisesortie where idmarchandisesortie = ?',[$id]);
         $infos = Info::all();
         DB::select('update marchandisesortie set cloturer = 1 where id =?',[$id]);
         $Clients = DB::select("select concat(c.nom,' ',c.prenom) as client from marchandisesortie me ,clients c
@@ -258,8 +278,8 @@ class MarchandiseSortieController extends Controller
         $InfoBon = DB::select('select totalsortie,idclient from marchandisesortie where id = ?',[$id]);
 
         $Data = DB::select("select qte,produit,
-        (select cuml from table_cumlmarchandisesortie where idclient = ? and nombre = ?) as cumul
-        from lignemarchandisesortie where idmarchandisesortie = ?",[$InfoBon[0]->idclient,$InfoBon[0]->totalsortie,$id]);
+        (select cuml from table_cumlmarchandisesortie where idmarchasortie = ? limit 1) as cumul
+        from lignemarchandisesortie where idmarchandisesortie = ?",[$id,$id]);
 
          $pdf            = PDF::loadView('Dashboard.MarchandiseSortie.PrintBonMarchandiseSortie',compact('Data','Clients','infos','ChauffeurAndMatricule','getMaxNumberBon'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');
@@ -274,6 +294,7 @@ class MarchandiseSortieController extends Controller
             $DeteteLigneMarchandiseSortie = DB::select("delete from lignemarchandisesortie where idmarchandisesortie = ?",[$request->id]);
             $DeleteMarchandiseSortie =DB::select("delete from marchandisesortie where id =?",[$request->id]);
             DB::select('delete from table_cumlmarchandisesortie where idmarchasortie = ?',[$request->id]);
+            DB::select('delete from bonmarchandisesortie where idmarchandisesortie = ?',[$request->id]);
             return response()->json([
                 'status'       => 200,
             ]);

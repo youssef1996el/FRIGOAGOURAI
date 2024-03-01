@@ -23,14 +23,14 @@
                 <tr>
                     <th rowspan="2">Date</th>
                     @foreach ($clientsCaisseVide as $client)
-                        <th colspan="2">{{ $client }}</th>
+                        <th >{{ $client }}</th>
                     @endforeach
                     <th rowspan="2">Total</th>
                 </tr>
                 <tr>
                     @foreach ($clientsCaisseVide as $client)
-                        <th>nombre</th>
-                        <th>Cumul</th>
+                         <th >nombre</th>
+                        {{-- <th>Cumul</th> --}}
                     @endforeach
                    {{--  <th>nombre</th> --}}
                     {{-- <th>Cumul</th> --}}
@@ -44,11 +44,11 @@
                         <td style="white-space: nowrap">{{ $date }}</td>
                         @foreach ($clientsCaisseVide as $client)
 
-                            <td>{{intval($clientsData[$client]['nombre'])  }}</td>
-                            <td>{{intval($clientsData[$client]['Cuml'])  }}</td>
+                            <td >{{intval($clientsData[$client]['nombre'])  }}</td>
+                            {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
 
                         @endforeach
-                        <td colspan="2">{{intval($totalsCaisseVide[$date]['totalNombre'])  }}</td>
+                        <td >{{intval($totalsCaisseVide[$date]['totalNombre'])  }}</td>
                         {{-- <td>{{ $totalsCaisseVide[$date]['totalCuml'] }}</td> --}}
                     </tr>
                 @endforeach
@@ -65,10 +65,10 @@
                             $sumCuml += $clientsData[$client]['Cuml'];
                         }
                         ?>
-                        <td colspan="2">{{ $sumNombre }}</td>
+                        <td >{{ $sumNombre }}</td>
                         {{-- <td >{{ $sumCuml }}</td> --}}
                     @endforeach
-                    <td colspan="2">{{ $totalsCaisseVide['grandTotalNombre'] }}</td>
+                    <td >{{ $totalsCaisseVide['grandTotalNombre'] }}</td>
                     {{-- <td >{{ $totalsCaisseVide['grandTotalCuml'] }}</td> --}}
                 </tr>
             </tfoot>

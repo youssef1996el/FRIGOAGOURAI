@@ -65,10 +65,46 @@
                     <div class="card p-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-12 col-md-6 col-xl-6">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="background:#d0d0ec">Client</th>
+                                            <th style="background: #aaf5ae;">Nombre</th>
+                                            <th style="background: #ffbe6a;">Livreur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <select name="" id="" class="form-select client">
+                                                    <option value="0">Veuillez sélectionner le client</option>
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{$client->id}}">{{$client->nom.' '.$client->prenom}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control nbboxADD">
+                                            </td>
+                                            <td>
+                                                <select name="" id="DropDownChauffeur" class="form-select Livreur" >
+                                                    <option value="0">veuillez sélectionner un Livreur</option>
+                                                    @foreach ($chauffeurs as $item)
+                                                        <option value="{{$item->name}}">{{$item->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <input type="text" class="form-control cinChauffeur" hidden>
+                                <input type="text" class="form-control Matricule" hidden>
+
+                                {{--<div class="col-sm-12 col-md-6 col-xl-6">
                                     <label for="">Nombre </label>
                                     <input type="number" class="form-control nbboxADD">
                                     <div class="error"></div>
+
                                     <label for="">Client</label>
                                     <select name="" id="" class="form-select client">
                                         <option value="0">Veuillez sélectionner le client</option>
@@ -77,6 +113,7 @@
                                         @endforeach
                                     </select>
                                     <div class="errorClient"></div>
+
                                     <label for="">C.I.N Livreur</label>
                                     <input type="text" class="form-control cinChauffeur" readonly>
                                     <div class="error"></div>
@@ -93,9 +130,9 @@
                                             <option value="{{$item->name}}">{{$item->name}}</option>
                                         @endforeach
                                     </select>
-                                    {{-- <input type="text" class="form-control Chauffeur"> --}}
+
                                     <div class="error"></div>
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
                     </div>
@@ -120,10 +157,47 @@
                     <div class="card p-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-12 col-md-6 col-xl-6">
+                                <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="background:#d0d0ec">Client</th>
+                                        <th style="background: #aaf5ae;">Nombre</th>
+                                        <th style="background: #ffbe6a;">Livreur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select name="" id="" class="form-select clientEdit">
+                                                <option value="0">Veuillez sélectionner le client</option>
+                                                @foreach ($clients as $client)
+                                                    <option value="{{$client->id}}">{{$client->nom.' '.$client->prenom}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                           <input type="number" class="form-control nbboxADDEDit" id="nbboxEdit">
+                                        </td>
+                                        <td>
+                                            <select name="" id="DropDownChauffeurEdit" class="form-select ChauffeurEdit">
+                                                <option value="0">veuillez sélectionner un livreur</option>
+                                                @foreach ($chauffeurs as $item)
+                                                    <option value="{{$item->name}}">{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                             <input type="text" class="form-control cinChauffeurEdit"  hidden>
+                             <input type="text" class="form-control MatriculeEdit"  hidden>
+
+                                {{--<div class="col-sm-12 col-md-6 col-xl-6">
                                     <label for="">Nombre </label>
                                     <input type="number" class="form-control nbboxADDEDit" id="nbboxEdit">
                                     <div class="error"></div>
+
+
                                     <label for="">Client</label>
                                     <select name="" id="" class="form-select clientEdit">
                                         <option value="0">Veuillez sélectionner le client</option>
@@ -148,10 +222,10 @@
                                             <option value="{{$item->name}}">{{$item->name}}</option>
                                         @endforeach
                                     </select>
-                                   {{--  <input type="text" class="form-control ChauffeurEdit"> --}}
+
                                     <div class="error"></div>
 
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
                     </div>
@@ -337,21 +411,19 @@
                             {
                                 if(value.cloturer == 1 && response.Role !="user")
                                 {
-                                    icon ='<a href="#" class="fa-solid fa-pen-to-square text-success fs-5 mr-5 IconEditCaisseEntree" value='+value.id+' title="Modifier cette bon sortie"></a>\
-                                            <a href="#" class="fa-solid fa-trash text-warning fs-5 IconTrashCaisseEntree" value='+value.id+' title="Supprimer cette bon sortie"></a>\
+                                    icon ='<a href="#" class="fa-solid fa-trash text-warning fs-5 IconTrashCaisseEntree" value='+value.id+' title="Supprimer cette bon sortie"></a>\
                                             <a href="#" class="fa-solid fa-file-pdf text-danger fs-5 IconPrintCaisseRetour target="_blank" value='+value.id+' title="Imprimer cette bon sortie"></a>\
                                             <a href="#" class="fa-solid fa-circle-check text-info fs-5 " value='+value.id+' title="bon est clôturer"></a>'
                                 }
                                 else
                                 {
-                                    icon ='<a href="#" class="fa-solid fa-pen-to-square text-success fs-5 mr-5 IconEditCaisseEntree" value='+value.id+' title="Modifier cette bon sortie"></a>\
-                                            <a href="#" class="fa-solid fa-trash text-warning fs-5 IconTrashCaisseEntree" value='+value.id+' title="Supprimer cette bon sortie"></a>\
+                                    icon ='<a href="#" class="fa-solid fa-trash text-warning fs-5 IconTrashCaisseEntree" value='+value.id+' title="Supprimer cette bon sortie"></a>\
                                             <a href="#" class="fa-solid fa-file-pdf text-danger fs-5 IconPrintCaisseRetour target="_blank" value='+value.id+' title="Imprimer cette bon sortie"></a>'
                                 }
 
                             }
                             dataTable.row.add([
-                                value.nbbox,
+                                parseInt(value.nbbox),
                                 value.client,
                                 value.cin,
                                 value.chauffeur,
@@ -377,8 +449,67 @@
             location.reload();
         });
         $('#ValideBonEntreCaisse').on('click',function()
+        {
+            if($('.nbboxADD').val() == '')
             {
-                var fields = ['.nbboxADD','.Matricule','.Chauffeur','.cinChauffeur'];
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Nombre retour ne peux pas être vide!",
+                });
+                return false;
+            }
+            if($('.Livreur').val() == 0)
+            {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Livreur ne peux pas être vide",
+                });
+                return false;
+            }
+            if($('.client').val() == 0)
+            {
+               Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Client ne peux pas être vide",
+                });
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: "{{url('StoreCaisseRetour')}}",
+                data:
+                {
+                    "_token"    : "{{ csrf_token() }}",
+                    nbbox       : $('.nbboxADD').val(),
+                    matricule   : $('.Matricule').val(),
+                    client      : $('.client').val(),
+                    chauffeur   : $('.Livreur').val(),
+                    cin         : $('.cinChauffeur').val(),
+                },
+                dataType: "json",
+                success: function (response) {
+                    if(response.status == 200)
+                    {
+                        $('#ModalCaisseEntree').modal("hide");
+                        GetCaisseRetour();
+                        $('.nbboxADD').val("");
+                        $('.Matricule').val("");
+
+                        $('.Chauffeur').val("");
+                        $('.Msg').addClass('alert alert-success').text('ajouter avec succès').delay(6000).fadeOut("slow");
+                        setTimeout(function() {
+                            // Reload the page
+                            location.reload();
+                        }, 1000);
+                    }
+                }
+            });
+
+                /*var fields = ['.nbboxADD','.Matricule','.Chauffeur','.cinChauffeur'];
 
                 var hasError = false;
                 $('.error').text('');
@@ -445,7 +576,7 @@
                             }
                         }
                     });
-                }
+                }*/
             });
             var idCaisseRetour = 0;
             $(document).on('click','.IconEditCaisseEntree',function()
@@ -477,65 +608,66 @@
             });
             $('#ValideBonEntreCaisseEdit').on('click',function()
             {
-                var fields = ['.nbboxADDEdit','.MatriculeEdit','.ChauffeurEdit','.cinChauffeurEdit'];
-              /*   alert($()) */
-                var hasError = false;
-                $('.error').text('');
-                fields.forEach(function(field, index) {
-                    var value = $(field).val();
-                    var errorMessage = '';
 
-                    switch (index) {
-                        case 0:
-                            errorMessage = 'nombre bon retour ne peux pas être vide';
-                            break;
-                        case 1:
-                            errorMessage = 'Matricule ne peux pas être vide';
-                            break;
-                        case 2:
-                            errorMessage = 'Chauffeur ne peux pas être vide';
-                            break;
-                            case 3:
-                            errorMessage = 'C.I.N ne peux pas être vide';
-                            break;
-
-                    }
-
-                    if (value === '')
-                    {
-                        $('#ModalCaisseEntreeEdit').find('.error').eq(index).text(errorMessage);
-                        hasError = true;
-                    }
-                });
+                if($('.nbboxADDEdit').val() == '')
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Nombre retour ne peux pas être vide!",
+                    });
+                    return false;
+                }
+                if($('.ChauffeurEdit').val() == 0)
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "livreur ne peux pas être vide",
+                    });
+                    return false;
+                }
+                if($('.ChauffeurEdit').val() == null)
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "livreur ne peux pas être vide",
+                    });
+                    return false;
+                }
                 if($('.clientEdit').val() == 0)
                 {
-                    $('.errorClient').text('veuillez sélectionner le client').css('color','red');
-                    return 0;
-                }
-                if(!hasError)
-                {
-                    $.ajax({
-                        type: "post",
-                        url: "{{url('EditCaisseRetour')}}",
-                        data:
-                        {
-                            "_token"    : "{{ csrf_token() }}",
-                            nbboxEdit : $('#nbboxEdit').val(),
-                            matricule : $('.MatriculeEdit').val(),
-                            client : $('.clientEdit').val(),
-                            chauffeur : $('.ChauffeurEdit').val(),
-                            id :idCaisseRetour,
-                            cin     : $('.cinChauffeurEdit').val(),
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            if(response.status == 200)
-                            {
-                                location.reload();
-                            }
-                        }
+                   Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Client ne peux pas être vide",
                     });
+                    return false;
                 }
+                $.ajax({
+                    type: "post",
+                    url: "{{url('EditCaisseRetour')}}",
+                    data:
+                    {
+                        "_token"    : "{{ csrf_token() }}",
+                        nbboxEdit : $('#nbboxEdit').val(),
+                        matricule : $('.MatriculeEdit').val(),
+                        client : $('.clientEdit').val(),
+                        chauffeur : $('.ChauffeurEdit').val(),
+                        id :idCaisseRetour,
+                        cin     : $('.cinChauffeurEdit').val(),
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        if(response.status == 200)
+                        {
+                            location.reload();
+                        }
+                    }
+                });
+
+
             });
             $(document).on('click','.IconTrashCaisseEntree',function()
             {

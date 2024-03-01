@@ -25,7 +25,7 @@ class InfoController extends Controller
                 'capital'           =>$request->CAPITAL,
                 'title'             =>$request->titre,
                 'cb'                =>$request->cb,
-                'societe'           =>null,
+                'societe'           =>$request->societe,
                 'user_id'           =>Auth::user()->id,
             ]);
 
@@ -49,7 +49,7 @@ class InfoController extends Controller
                 'capital'           =>$request->CAPITAL,
                 'title'             =>$request->titre,
                 'cb'                =>$request->cb,
-                'societe'           =>null,
+                'societe'           =>$request->societe,
                 'user_id'           =>Auth::user()->id,
             ]);
             return redirect()->back();

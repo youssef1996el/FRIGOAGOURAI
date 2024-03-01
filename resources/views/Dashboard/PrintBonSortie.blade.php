@@ -135,7 +135,7 @@
                 <thead>
                     <tr>
                         <th>Nombre de Caisse</th>
-                        <th style="text-align: center">Nom Chauffeur / Matricule</th>
+                        <th style="text-align: center">Nom Livreur / Matricule</th>
                         <th>CIN</th>
                         <th>Signature</th>
                         <th>Cumul</th>
@@ -222,10 +222,15 @@
                 <label for="" style="font-size:20px">Visa Responsable Frigo</label><span>.....................................</span>
             </div>
             <footer class="invoice-footer">
-                <span>C/B : {{$infos[0]->cb}}</span>
-                <span>IF N° : {{$infos[0]->if}}</span>
+                <span>SOCIETE : {{$infos[0]->societe}}</span>
                 <span>SARL au Capital de : {{$infos[0]->capital}}</span>
-                <span>ICE N° : {{$infos[0]->ice}}</span>
+                 <span>ICE N° : {{$infos[0]->ice}}</span>
+                  <span>IF N° : {{$infos[0]->if}}</span>
+                <span>C/B : {{$infos[0]->cb}}</span>
+
+
+
+
             </footer>
         </div>
     @endfor

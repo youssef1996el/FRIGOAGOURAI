@@ -107,7 +107,52 @@
                     <div class="card p-3">
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-sm-12 col-md-6 col-xl-6">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="background:#d0d0ec">Client</th>
+                                            <th style="background: #aaf5ae;">Nombre</th>
+                                            <th style="background: #f5aaaa;">Produit</th>
+                                            <th style="background: #ffbe6a;">Livreur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <select name="" id="" class="form-select client">
+                                                    <option value="0">Veuillez sélectionner le client</option>
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{$client->id}}">{{$client->nom.' '.$client->prenom}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control nbboxADD">
+                                            </td>
+                                            <td>
+                                                <select name="" id="" class="form-select Produit">
+                                                    <option value="0">veuillez sélectionner un produit</option>
+                                                    @foreach ($Origine as $item)
+                                                        <option value="{{$item->title}}">{{$item->title}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="" id="DropDownChauffeur" class="form-select Chauffeur">
+                                                    <option value="0">veuillez sélectionner un chauffeur</option>
+                                                    @foreach ($chauffeurs as $item)
+                                                        <option value="{{$item->name}}">{{$item->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <input type="text" class="form-control Matricule" hidden>
+                                <input type="text" class="form-control cinChauffeur" hidden>
+
+
+                                {{--<div class="col-sm-12 col-md-6 col-xl-6">
                                     <label for="">Nombre </label>
                                     <input type="number" class="form-control nbboxADD">
                                     <div class="error"></div>
@@ -120,7 +165,6 @@
                                     </select>
                                     <div class="error"></div>
                                     <label for="">Livreur</label>
-                                    {{-- <input type="text" class="form-control Chauffeur"> --}}
                                     <select name="" id="DropDownChauffeur" class="form-select Chauffeur">
                                         <option value="0">veuillez sélectionner un chauffeur</option>
                                         @foreach ($chauffeurs as $item)
@@ -131,11 +175,11 @@
                                 <div class="col-sm-12 col-md-6 col-xl-6">
                                     <label for="">Produit</label>
                                     <select name="" id="" class="form-select Produit">
+                                        <option value="0" selected>Veuillez sélectionner le produit</option>
                                         @foreach ($Origine as $item)
                                             <option value="{{$item->title}}">{{$item->title}}</option>
                                         @endforeach
                                     </select>
-                                    {{-- <input type="text" class="form-control Produit"> --}}
                                     <div class="error"></div>
                                     <label for="">Matricule</label>
                                     <input type="text" class="form-control Matricule" readonly>
@@ -143,7 +187,7 @@
                                     <label for="">C.I.N livreur</label>
                                     <input type="text" class="form-control cinChauffeur" readonly>
                                     <div class="error"></div>
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
                     </div>
@@ -508,7 +552,7 @@
 
 
                                 dataTable.row.add([
-                                    value.totalentree,
+                                    parseInt(value.totalentree),
                                     value.name,
                                     value.cin,
                                     value.chauffeur,
@@ -575,61 +619,57 @@
 
 
 
-            $('#AddMarchandiseEntree').on('click', function() {
-                var fields = ['.nbboxADD','.client','.Produit','.Matricule','.Chauffeur','.cinChauffeur'];
-                var hasError = false;
-
-                $('.error').text('');
-
-                fields.forEach(function(field, index) {
-                    var value = $(field).val().trim();
-                    var errorMessage = '';
-
-                    switch (index) {
-                        case 0:
-                            errorMessage = 'Nombre entrée ne peux pas être vide';
-                            break;
-                        case 1:
-                            errorMessage = 'Client ne peux pas être vide';
-                            break;
-                        case 2:
-                            errorMessage = 'Produit ne peux pas être vide';
-                            break;
-                            case 3:
-                            errorMessage = 'Matricule ne peux pas être vide';
-                            break;
-                            case 4:
-                            errorMessage = 'Chauffeur ne peux pas être vide';
-                            break;
-                            case 5:
-                            errorMessage = 'C.I.N Chauffeur ne peux pas être vide';
-                            break;
-                    }
-
-                    if (value === '') {
-                        $('.error').eq(index).text(errorMessage);
-                        hasError = true;
-                    }
-                });
+            $('#AddMarchandiseEntree').on('click', function()
+            {
                 if($('.client').val() == 0)
                 {
-                    $('.client').next('.error').text('Client ne peux pas être vide');
-                    hasError = true;
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Client entrée ne peux pas être vide!",
+                    });
+                    return false;
                 }
-                if (!hasError)
+                if($('.nbboxADD').val() == '')
                 {
+                     Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Nombre entrée ne peux pas être vide!",
+                    });
+                    return false;
+                }
+                if($('.Produit').val() == 0)
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Produit entrée ne peux pas être vide!",
+                    });
+                    return false;
+                }
 
-                    $.ajax({
+                 if($('.Chauffeur').val() == 0)
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Chauffeur entrée ne peux pas être vide!",
+                    });
+                    return false;
+                }
+
+                $.ajax({
                         type: "post",
                         url: "{{url('StoreTmpMacheEntree')}}",
                         data:
                         {
                             "_token"    : "{{ csrf_token() }}",
-                            client : $('.client').val(),
-                            produit : $('.Produit').val(),
-                            nbBox   : $('.nbboxADD').val(),
-                            matricule : $('.Matricule').val(),
-                            chauffeur : $('.Chauffeur').val(),
+                            client      : $('.client').val(),
+                            produit     : $('.Produit').val(),
+                            nbBox       : $('.nbboxADD').val(),
+                            matricule   : $('.Matricule').val(),
+                            chauffeur   : $('.Chauffeur').val(),
                             cin         : $('.cinChauffeur').val(),
                         },
                         dataType: "json",
@@ -637,6 +677,7 @@
                         {
                             if(response.status == 200)
                             {
+
                                 GetTmpMachaEntree(idclient);
                             }
                             if(response.status == 300)
@@ -647,7 +688,7 @@
                         }
                     });
 
-                }
+
             });
 
             $(document).on('click','.IconTrashTmpMarchEntree',function()
@@ -698,6 +739,10 @@
                     {
                         if(response.status == 200)
                         {
+                             $('.client').val(0);
+                            $('.Produit').val(0);
+                            $('.Chauffeur').val(0);
+                            $('.nbboxADD').val('');
                             GetTmpMachaEntree(idclient);
                             $('#ModalMerchandiseEntree').modal("hide");
                             GetMarchEntreeDashboard();

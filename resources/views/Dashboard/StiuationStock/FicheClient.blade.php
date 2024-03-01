@@ -163,8 +163,8 @@
 
 
     <div class="p-2 bg-light border mt-3">
-        <p class=" fs-3"> restant caisses vides chez client    = <span>{{$reste}}</span></p>
-        <p class="fs-3">resatant marachandise en stock= <span>{{$resteMarchandise}}</span></p>
+        <p class=" fs-3"> restant caisses vides chez client    = <span>{{$totalss['caisseVide'] - $totalss['caisseRetour']}}</span></p>
+        <p class="fs-3">resatant marachandise en stock= <span>{{$totalEntree - $totalSortie}}</span></p>
     </div>
 
 

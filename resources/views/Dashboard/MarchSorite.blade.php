@@ -108,37 +108,42 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-6">
-                                <label for="">Nombre  :</label>
-                                <input type="text" class="form-control nbbox"  placeholder="Nombre ">
-                                <div class="error"></div>
-                                <label for="">Matricule</label>
-                                <input type="text" class="form-control matricule" placeholder="matricule" readonly>
-                                <div class="error"></div>
-                                <label for="">C.I.N (livreur)</label>
-                                <input type="text" class="form-control cinChauffeur" placeholder="C.I.N (livreur)" readonly>
-                                <div class="error"></div>
-                            </div>
-                            <div class="col-6">
-                                <label for="">Client :</label>
-                                <select  class="form-select client">
-                                    <option value="0">veuillez sélectionner le client</option>
-                                    @foreach ($clients as $client)
-                                        <option value="{{$client->id}}">{{ $client->nom . ' ' . $client->prenom }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="errorClient"></div>
-                                <label for="">Livreur</label>
-                                <select name="" id="DropDownChauffeur" class="form-select chauffeur">
-                                    <option value="0">veuillez sélectionner un chauffeur</option>
-                                    @foreach ($Chauffeur as $item)
-                                        <option value="{{$item->name}}">{{$item->name}}</option>
-                                    @endforeach
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="background:#d0d0ec">Client</th>
+                                        <th style="background: #aaf5ae;">Nombre</th>
+                                        <th style="background: #ffbe6a;">Livreur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select  class="form-select client">
+                                                <option value="0">veuillez sélectionner le client</option>
+                                                @foreach ($clients as $client)
+                                                    <option value="{{$client->id}}">{{ $client->nom . ' ' . $client->prenom }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control nbbox"  placeholder="Nombre ">
+                                        </td>
+                                        <td>
+                                            <select name="" id="DropDownChauffeur" class="form-select chauffeur">
+                                                <option value="0">veuillez sélectionner un livreur</option>
+                                                @foreach ($Chauffeur as $item)
+                                                    <option value="{{$item->name}}">{{$item->name}}</option>
+                                                @endforeach
 
-                                </select>
-                                {{-- <input type="text" class="form-control chauffeur" placeholder="chauffeur"> --}}
-                                <div class="errorChauffeur"></div>
-                            </div>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="text" class="form-control matricule" placeholder="matricule" hidden>
+                            <input type="text" class="form-control cinChauffeur" placeholder="C.I.N (livreur)" hidden>
+
                         </div>
                     </div>
                 </div>
@@ -160,37 +165,41 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-6">
-                                <label for="">Nombre Sorite :</label>
-                                <input type="text" class="form-control EditNombreSorite" placeholder="Nombre Sorite">
-                                <div class="error"></div>
-                                <label for="">Matricule :</label>
-                                <input type="text" class="form-control EditMAtriculeSortie" placeholder="Matricule" readonly>
-                                <div class="error"></div>
-                                <label for="">CIN :</label>
-                                <input type="text" class="form-control EditCIN" placeholder="C.I.N" readonly>
-                                <div class="error"></div>
-                            </div>
-                            <div class="col-6">
-                                <label for="">Client :</label>
-                                <select class="form-select EditClient" disabled>
-                                    @foreach ($clients as $client)
-                                        <option value="{{$client->id}}">{{$client->nom.' '.$client->prenom}}</option>
-                                    @endforeach
-                                </select>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="background:#d0d0ec">Client</th>
+                                        <th style="background: #aaf5ae;">Nombre</th>
+                                        <th style="background: #ffbe6a;">Livreur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-select EditClient" disabled>
+                                                @foreach ($clients as $client)
+                                                    <option value="{{$client->id}}">{{$client->nom.' '.$client->prenom}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control EditNombreSorite" placeholder="Nombre Sorite">
+                                        </td>
+                                        <td>
+                                            <select name="" id="DropDownChauffeurEdit" class="form-select EditChauffeur">
+                                                <option value="0">veuillez sélectionner un chauffeur</option>
 
-                                <div class="error"></div>
-                                <label for="">Chauffeur</label>
-                                <select name="" id="DropDownChauffeurEdit" class="form-select EditChauffeur">
-                                    <option value="0">veuillez sélectionner un chauffeur</option>
+                                                @foreach ($Chauffeur as $item)
+                                                    <option value="{{$item->name}}">{{$item->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="text" class="form-control EditCIN" placeholder="C.I.N" hidden>
+                            <input type="text" class="form-control EditMAtriculeSortie" placeholder="Matricule" hidden>
 
-                                    @foreach ($Chauffeur as $item)
-                                        <option value="{{$item->name}}">{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-{{--                                 <input type="text" class="form-control EditChauffeur" placeholder="Chauffeur"> --}}
-                                <div class="errorChauffeurEdit"></div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -369,22 +378,20 @@
                                 /* mylink */
                                 if(value.cloturer == 1 && response.Role !="user")
                                 {
-                                    icon ='<a href="#" class="fa-solid fa-pen-to-square text-success fs-5 mr-5 IconEditMSortie" value='+value.id+' title="Modifier cette bon sortie"></a>\
-                                            <a href="#"  class="fa-solid fa-trash text-warning fs-5 IconTrashMSortie " value='+value.id+' title="Supprimer cette bon sortie" ></a>\
+                                    icon ='<a href="#"  class="fa-solid fa-trash text-warning fs-5 IconTrashMSortie " value='+value.id+' title="Supprimer cette bon sortie" ></a>\
                                             <a href="#" class="fa-solid fa-file-pdf text-danger fs-5 IconPrintMSortie" target="_blank" value='+value.id+' title="Imprimer cette bon sortie"></a>\
                                             <a href="#" class="fa-solid fa-circle-check text-info fs-5 "  value='+value.id+' title="bon est clôturer"></a>'
                                 }
                                 else
                                 {
-                                    icon ='<a href="#" class="fa-solid fa-pen-to-square text-success fs-5 mr-5 IconEditMSortie" value='+value.id+' title="Modifier cette bon sortie"></a>\
-                                            <a href="#" class="fa-solid fa-trash text-warning fs-5 IconTrashMSortie" value='+value.id+' title="Supprimer cette bon sortie"></a>\
+                                    icon ='<a href="#" class="fa-solid fa-trash text-warning fs-5 IconTrashMSortie" value='+value.id+' title="Supprimer cette bon sortie"></a>\
                                             <a href="#" class="fa-solid fa-file-pdf text-danger fs-5 IconPrintMSortie" target="_blank" value='+value.id+' title="Imprimer cette bon sortie"></a>'
                                 }
 
                             }
 
                             dataTable.row.add([
-                                value.nbbox,
+                                parseInt(value.nbbox),
                                 value.cin,
                                 value.matricule,
                                 value.chauffeur,
@@ -479,40 +486,26 @@
         });
         $('#EditBonSortie').on('click',function()
         {
-            var fields = ['.EditNombreSorite','.EditMAtriculeSortie','.EditChauffeur','.EditCIN'];
-
-            var hasError = false;
-            $('.error').text('');
-            fields.forEach(function(field, index) {
-                var value = $(field).val();
-                var errorMessage = '';
-
-                switch (index) {
-                    case 0:
-                        errorMessage = 'nombre bon sortie ne peux pas être vide';
-                        break;
-                    case 1:
-                        errorMessage = 'Matricule ne peux pas être vide';
-                        break;
-                    case 2:
-                        errorMessage = 'Chauffeur ne peux pas être vide';
-                        break;
-                        case 3:
-                        errorMessage = 'C.I.N chauffeur ne peux pas être vide';
-                        break;
-
-                }
-
-                if (value === '')
-                {
-                    $('#ModalMerchandiseSortie').find('.error').eq(index).text(errorMessage);
-                    hasError = true;
-                }
-            });
-
-            if(!hasError)
+            if($('.EditNombreSorite').val() == '')
             {
-                $.ajax({
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Nombre sortie ne peux pas être vide!",
+                });
+                return false;
+            }
+
+            if($('.EditChauffeur').val() == 0)
+            {
+                 Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Chauffeur ne peux pas être vide",
+                });
+                return false;
+            }
+            $.ajax({
                     type: "post",
                     url: "{{url('EditBonSortie')}}",
                     data:
@@ -530,69 +523,47 @@
                     {
                         if(response.status == 200)
                         {
+
                             $('#ModalEditMarchandisSortie').modal('hide');
                             $('.textReturn').addClass('alert alert-success').text('mettre à jour avec succès').delay(4000).fadeOut('slow');
+
                             GetMarchSoriteDashboard();
                         }
                     }
                 });
-            }
         });
 
 
         $('#AddMarchandiseSortie').on('click', function() {
-            var fields = ['.nbbox','.matricule','.chauffeur','.cinChauffeur'];
-            var hasError = false;
-
-            $('.error').text('');
-
-            fields.forEach(function(field, index) {
-                var value = $(field).val().trim();
-                var errorMessage = '';
-
-                switch (index) {
-                    case 0:
-                        errorMessage = 'Nombre sortie ne peux pas être vide';
-                        break;
-                    case 1:
-                        errorMessage = 'Matricule ne peux pas être vide';
-                        break;
-                    case 2:
-                        errorMessage = 'Chauffeur ne peux pas être vide';
-                        break;
-                        case 3:
-                        errorMessage = 'C.I.N ne peux pas être vide';
-                        break;
-                }
-
-                if (value === '') {
-                    $('.error').eq(index).text(errorMessage);
-                    hasError = true;
-                }
-            });
+            if($('.nbbox').val() == '')
+            {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Nombre sortie ne peux pas être vide!",
+                });
+                return false;
+            }
+            if($('.chauffeur').val() == 0)
+            {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Livreur ne peux pas être vide",
+                });
+                return false;
+            }
             if($('.client').val() == 0)
             {
-                $('.errorClient').text('Client ne peux pas être vide').css('color','red');
-                hasError = true;
-            }
-            else
-            {
-                $('.errorClient').text('');
-
-            }
-            if($('#DropDownChauffeur').val()  == 0)
-            {
-                $('.errorChauffeur').text('Chauffeur ne peux pas être vide').css('color','red');
-                hasError = true;
-            }
-            else
-            {
-                $('.errorChauffeur').text('');
+               Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Client ne peux pas être vide",
+                });
+                return false;
             }
 
-            if (!hasError)
-            {
-                $.ajax({
+            $.ajax({
                     type: "post",
                     url: "{{url('StoreMarchandiseSortieCaisse')}}",
                     headers: {
@@ -600,11 +571,11 @@
                     },
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        nbbox: $('.nbbox').val(),
+                        nbbox     : $('.nbbox').val(),
                         matricule : $('.matricule').val(),
                         chauffeur : $('.chauffeur').val(),
-                        client : $('.client').val(),
-                        cin    : $('.cinChauffeur').val(),
+                        client    : $('.client').val(),
+                        cin       : $('.cinChauffeur').val(),
                     },
                     dataType: "json",
                     success: function(response)
@@ -613,12 +584,14 @@
                         {
                             $('#ModalMerchandiseSortie').modal('hide');
                             $('.textReturn').addClass('alert alert-success').text('ajouter avec succès').delay(4000).fadeOut('slow');
-
+                            $('.nbbox').val('');
+                            $('.chauffeur').val(0);
+                            $('.client').val(0);
                             GetMarchSoriteDashboard();
                         }
                     }
                 });
-            }
+
         });
 
         /* $('.client').on('change',function()

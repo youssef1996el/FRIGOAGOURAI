@@ -13,5 +13,7 @@ class BonCaisseRetour extends Model
     protected $fillable =
     [
         'number',
+        'idcompanie',
+        'idcaisseretour'
     ];
 }

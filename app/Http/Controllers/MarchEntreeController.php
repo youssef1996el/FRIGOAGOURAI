@@ -32,8 +32,8 @@ class MarchEntreeController extends Controller
 
     public function GetTmpMachaEntree(Request $request)
     {
-        $TmpMarchEntree = DB::select('select t.*,concat(c.nom," ",c.prenom) as name_client from TmpMarchEntree t,clients c where t.idclient = c.id and t.idclient = ? order by t.id desc',[$request->idclient]);
-        $totalCaisseEntree = DB::select("select ifnull(sum(nbbox),0) as total from TmpMarchEntree where idclient  = ?",[$request->idclient]);
+        $TmpMarchEntree = DB::select('select t.*,concat(c.nom," ",c.prenom) as name_client from tmpmarchentree t,clients c where t.idclient = c.id and t.idclient = ? order by t.id desc',[$request->idclient]);
+        $totalCaisseEntree = DB::select("select ifnull(sum(nbbox),0) as total from tmpmarchentree where idclient  = ?",[$request->idclient]);
         return response()->json([
             'status'        =>200,
             'data'          =>$TmpMarchEntree,
@@ -105,6 +105,28 @@ class MarchEntreeController extends Controller
                 'cin'                     => $request->ligne[0][0],
                 'compagnie'               => $idCompagnieIsActive[0]->id
             ]);
+            $checkBonMarchEntre = DB::select("select count(*) as c from bonmarchandiseentree where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+            if($checkBonMarchEntre[0]->c >0)
+            {
+               $getNomberBon = DB::select("select max(number)+1 as number from bonmarchandiseentree where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+               $DataBonMarchEntree =
+               [
+                    'number'        => $getNomberBon[0]->number,
+                    'idmarchandisentre'  => $MarchEntree->id,
+                    'idcompanie'    => $idCompagnieIsActive[0]->id,
+               ];
+               $BonMarchEntree = DB::table('bonmarchandiseentree')->insert($DataBonMarchEntree);
+            }
+             else
+            {
+                $DataBonMarchEntree =
+                [
+                    'number'             => 1,
+                    'idmarchandisentre'  => $MarchEntree->id,
+                    'idcompanie'         => $idCompagnieIsActive[0]->id,
+                ];
+                $BonMarchEntree = DB::table('bonmarchandiseentree')->insert($DataBonMarchEntree);
+            }
             foreach ($request->ligne as $key => $value)
             {
 
@@ -180,7 +202,7 @@ class MarchEntreeController extends Controller
             $CalculQuantiteSortieStock = (int)$Stock[0]->Quantitesortie - $QuantiteEntreeNew;
             $CalculQuantiteActuelle = (int)$Stock[0]->Capacitstock - $CalculQuantiteSortieStock;
             $updateStock = DB::select('update stock set Quantitesortie=? , Quantiteactuelle = ?',[$CalculQuantiteSortieStock,$CalculQuantiteActuelle]);
-            $DeleteTmpMarchEntree = DB::select("delete from TmpMarchEntree where user_id = ?",[Auth::user()->id]);
+            $DeleteTmpMarchEntree = DB::select("delete from tmpmarchentree where user_id = ?",[Auth::user()->id]);
 
 
             ////
@@ -250,7 +272,8 @@ class MarchEntreeController extends Controller
             }
             else
             {
-                $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlmarchandiseentree where idclient= ?',[$idClient[0]->id]);
+                $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlmarchandiseentree where idclient= ? and compagnie = ?',[$idClient[0]->id,
+                $idCompagnieIsActive[0]->id]);
                 $cumlFinale = $getLastCuml[0]->cuml + $request->totalentree;
                 $CumlCaisseMarchEntree = CumlMarchandiseEntree::create([
                     'dateoperation'     => \Carbon\Carbon::now()->format('Y-m-d'),
@@ -290,10 +313,8 @@ class MarchEntreeController extends Controller
 
     public function ExtractBonMarchEntree($id)
     {
-        $getMaxNumberBon = DB::select('SELECT LPAD(IFNULL(MAX(CAST(number AS UNSIGNED))+1, 1), 4, "0") AS number FROM bonmarchandiseentree');
-        $Bons = BonMarchandiseEntree::create([
-            'number'   => $getMaxNumberBon[0]->number,
-        ]);
+
+        $getMaxNumberBon = DB::select('select number from bonmarchandiseentree where idmarchandisentre = ?',[$id]);
         $infos = Info::all();
         DB::select('update marchentree set cloturer = 1 where id =?',[$id]);
         $Clients = DB::select("select concat(c.nom,' ',c.prenom) as client from marchentree me ,clients c
@@ -303,9 +324,9 @@ class MarchEntreeController extends Controller
         $InfoBon = DB::select('select totalentree,client_id from marchentree where id = ?',[$id]);
 
         $Data = DB::select("select qteentree,produit,
-        (select cuml from table_cumlmarchandiseentree where idclient = ? and nombre = ?) as cumul
+        (select cuml from table_cumlmarchandiseentree where idmarchaentre = ? limit 1) as cumul
         from lignemarchentree where marchentree_id = ?",
-        [$InfoBon[0]->client_id,$InfoBon[0]->totalentree,$id]);
+        [$id,$id]);
 
         $pdf            = PDF::loadView('Dashboard.PrintBonMachandisEntre',compact('Data','Clients','infos','ChauffeurAndMatricule','getMaxNumberBon'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');
@@ -320,6 +341,7 @@ class MarchEntreeController extends Controller
             $DeteteLigneMarchandiseEntree = DB::select("delete from lignemarchentree where marchentree_id = ?",[$request->id]);
             $DeleteMarchandiseEntree =DB::select("delete from marchentree where id =?",[$request->id]);
             DB::select("delete from table_cumlmarchandiseentree where idmarchaentre = ?",[$request->id]);
+            DB::select('delete from bonmarchandiseentree where idmarchandisentre = ?',[$request->id]);
             return response()->json([
                 'status'       => 200,
             ]);

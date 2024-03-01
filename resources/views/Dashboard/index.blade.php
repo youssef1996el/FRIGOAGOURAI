@@ -17,6 +17,7 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -100,7 +101,7 @@
                                     <a class="first-menu-item" href="{{url('SortieCaisseVide')}}">Sortie de caisses vides</a>
                                     <a class="secound-menu-item" href="{{url('Entremarchandises')}}">Entrée de marchandises</a>
                                     <a class="three-menu-item" href="{{url('SortieMarchandise')}}">Sortie de marchandises</a>
-                                    <a class="foor-menu-item" href="{{url('RetourdeMarchandise')}}">Retour de marchandise</a>
+                                    <a class="foor-menu-item" href="{{url('RetourdeMarchandise')}}">Retour de caisses vides</a>
                                     <a class="five-menu-item" href="{{url('bilanGeneral')}}">Le bilan général</a>
                                 </li>
                             </ul>
@@ -361,10 +362,25 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1;
 }
+/*
 .list-unstyled .listStockage:hover > ul {
     display: block;
 }
 
+        .list-unstyled ul li {
+            white-space: nowrap;
+        }
+        .list-unstyled .listStockage {
+            position: relative;
+        }*/
+
+         .listStockage ul {
+            display: none;
+        }
+
+        .listStockage.active ul {
+            display: block;
+        }
         .list-unstyled ul li {
             white-space: nowrap;
         }
@@ -424,6 +440,10 @@
         {
 			feather.replace();
 		});
+
+		 $('.listStockage').click(function () {
+            $(this).toggleClass('active');
+        });
 	</script>
 
 </body>

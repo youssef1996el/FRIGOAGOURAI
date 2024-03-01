@@ -15,6 +15,7 @@ use App\Models\BonCaisseVide;
 use App\Exports\CaisseVideExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\CumlCaisseVide;
+
 class MarchSortieController extends Controller
 {
     public function index()
@@ -57,6 +58,7 @@ class MarchSortieController extends Controller
 
         try
         {
+
             $idCompagnieIsActive = DB::select('select id  from compagnies where active ="active"');
             $MarchSortie =Marchsortie::create([
                 'nbbox'                 =>$request->nbbox,
@@ -69,6 +71,29 @@ class MarchSortieController extends Controller
                 'cin'                   =>$request->cin,
                 'compagnie'             =>$idCompagnieIsActive[0]->id
             ]);
+            $checkBonCaisseVide = DB::select("select count(*) as c from boncaissevides where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+            if($checkBonCaisseVide[0]->c >0)
+            {
+               $getNomberBon = DB::select("select max(number)+1 as number from boncaissevides where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+               $DataBonCaisseVide =
+               [
+                   'number'        => $getNomberBon[0]->number,
+                    'idcaissevide'  => $MarchSortie->id,
+                    'idcompanie'    => $idCompagnieIsActive[0]->id,
+               ];
+               $BonCaisseVide = DB::table('boncaissevides')->insert($DataBonCaisseVide);
+
+            }
+            else
+            {
+                $DataBonCaisseVide =
+                [
+                    'number'        => 1,
+                    'idcaissevide'  => $MarchSortie->id,
+                    'idcompanie'    => $idCompagnieIsActive[0]->id,
+                ];
+                $BonCaisseVide = DB::table('boncaissevides')->insert($DataBonCaisseVide);
+            }
             $nbBoxNoRetour = Db::select("select ifnull(sum(nbbox),0) as nbbox from marchsorites where is_retour = 0");
 
             $Stock = DB::select('select ifnull(Capacitstock,0) as Capacitstock ,ifnull(Quantitesortie,0) as Quantitesortie from stock');
@@ -105,7 +130,7 @@ class MarchSortieController extends Controller
                 }
                 else
                 {
-                    $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlcaissevides where idclient= ?',[$request->client]);
+                    $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlcaissevides where idclient= ? and compagnie = ?',[$request->client,$idCompagnieIsActive[0]->id]);
                     $cumlFinale = $getLastCuml[0]->cuml + $request->nbbox;
                     $CumlCaisseVide = CumlCaisseVide::create([
                         'dateoperation'     => \Carbon\Carbon::now()->format('Y-m-d'),
@@ -152,10 +177,19 @@ class MarchSortieController extends Controller
                 // get last row inserted
                 $LastRow = DB::select("select * from table_cumlcaissevides where idcaissevide < ? and idclient = ? order by id desc limit 1",
                                         [$request->id,$request->Client]);
-                $CalCulCuml = $LastRow[0]->cuml + $request->nbbox;
+                if(!empty($LastRow))
+                {
+                    $CalCulCuml = $LastRow[0]->cuml + $request->nbbox;
 
-                $UpdateTableCumlCaisseVide = DB::select('update table_cumlcaissevides set nombre = ? , cuml = ? where idcaissevide = ?',
+                    $UpdateTableCumlCaisseVide = DB::select('update table_cumlcaissevides set nombre = ? , cuml = ? where idcaissevide = ?',
                                                         [$request->nbbox,$CalCulCuml,$request->id]);
+                }
+                else
+                {
+                     $UpdateTableCumlCaisseVide = DB::select('update table_cumlcaissevides set nombre = ? , cuml = ? where idcaissevide = ?',
+                        [$request->nbbox,$request->nbbox,$request->id]);
+                }
+
             }
 
 
@@ -194,6 +228,7 @@ class MarchSortieController extends Controller
         {
             $DeleteBonSortie = Marchsortie::where('id','=',$request->id)->delete();
             DB::select("delete from table_cumlcaissevides where idcaissevide = ?",[$request->id]);
+            DB::select("delete from boncaissevides where idcaissevide = ?",[$request->id]);
 
             $nbBoxNoRetour = Db::select("select ifnull(sum(nbbox),0) as nbbox from marchsorites where is_retour = 0");
 
@@ -218,18 +253,17 @@ class MarchSortieController extends Controller
 
     public function ExtractBonSortie($id)
     {
-        $getMaxNumberBon = DB::select('SELECT LPAD(IFNULL(MAX(CAST(number AS UNSIGNED))+1, 1), 4, "0") AS number FROM boncaissevides');
-        $Bons = BonCaisseVide::create([
-            'number'   => $getMaxNumberBon[0]->number,
-        ]);
+
+                $idCompagnieIsActive = DB::select('select id  from compagnies where active ="active"');
+        $getMaxNumberBon = DB::select('select number from boncaissevides where idcaissevide = ?',[$id]);
         $infos          = DB::select("select * from infos");
         $InfoBon = DB::select('select nbbox,client_id from marchsorites where id = ?',[$id]);
         $Data = DB::select("select ms.cin,ms.chauffeur,ms.matricule,ms.nbbox,concat(c.nom,' ',c.prenom) as client , '' as siganture,
-                            (select cuml from table_cumlcaissevides where idclient = ? and nombre = ?) as cumul,
+                            (select cuml from table_cumlcaissevides where idcaissevide = ?  limit 1) as cumul,
                             '' as etranger
                             from clients c,marchsorites ms where c.id = ms.client_id and ms.id = ?",
 
-                            [$InfoBon[0]->client_id,$InfoBon[0]->nbbox,$id]);
+                            [$id,$id]);
         $count = count($Data);
 
         DB::select('update marchsorites set cloturer = 1 where id =?',[$id]);

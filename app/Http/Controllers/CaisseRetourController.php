@@ -56,6 +56,28 @@ class CaisseRetourController extends Controller
                 'cin'            => $request->cin,
                 'compagnie'               => $idCompagnieIsActive[0]->id
             ]);
+            $checkBonCaisseRetour = DB::select("select count(*) as c from boncaisseretour where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+            if($checkBonCaisseRetour[0]->c >0)
+            {
+               $getNomberBon = DB::select("select max(number)+1 as number from boncaisseretour where idcompanie = ?",[$idCompagnieIsActive[0]->id]);
+               $DataBonCaisseRetour =
+               [
+                    'number'          => $getNomberBon[0]->number,
+                    'idcaisseretour'  => $CaisseRetour->id,
+                    'idcompanie'      => $idCompagnieIsActive[0]->id,
+               ];
+               $BonCaisseRetour = DB::table('boncaisseretour')->insert($DataBonCaisseRetour);
+            }
+            else
+            {
+                $DataBonCaisseRetour =
+                [
+                    'number'           => 1,
+                    'idcaisseretour'   => $CaisseRetour->id,
+                    'idcompanie'       => $idCompagnieIsActive[0]->id,
+                ];
+                $BonCaisseRetour = DB::table('boncaisseretour')->insert($DataBonCaisseRetour);
+            }
             if($CaisseRetour)
             {
                 // 1- check client in table cumlVide
@@ -76,7 +98,7 @@ class CaisseRetourController extends Controller
                 }
                 else
                 {
-                    $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlcaisseretours where idclient= ?',[$request->client]);
+                    $getLastCuml = DB::select('select sum(nombre) as cuml from table_cumlcaisseretours where idclient= ? and compagnie = ?',[$request->client,$idCompagnieIsActive[0]->id]);
 
                     $cumlFinale = $getLastCuml[0]->cuml + $request->nbbox;
                     $CumlCaisseRetour = CumlCaisseRetour::create([
@@ -125,11 +147,22 @@ class CaisseRetourController extends Controller
                 // get last row inserted
                 $LastRow = DB::select("select * from table_cumlcaisseretours where idcaissevide < ? and idclient = ? order by id desc limit 1",
                                         [$request->id,$request->client]);
+                if(!empty($LastRow))
+                {
+                    $CalCulCuml = $LastRow[0]->cuml + $request->nbbox;
+                    $UpdateTableCumlCaisseRetour = DB::select('update table_cumlcaisseretours set nombre = ? , cuml = ? where idcaissevide = ?',
+                                                        [$request->nbbox,$CalCulCuml,$request->id]);
+                }
+                else
+                {
+                     $UpdateTableCumlCaisseRetour = DB::select('update table_cumlcaisseretours set nombre = ? , cuml = ? where idcaissevide = ?',
+                        [$request->nbbox,$request->nbbox,$request->id]);
+                }
 
-                $CalCulCuml = $LastRow[0]->cuml + $request->nbboxEdit;
+                /*$CalCulCuml = $LastRow[0]->cuml + $request->nbboxEdit;
 
                 $UpdateTableCumlCaisseVide = DB::select('update table_cumlcaisseretours set nombre = ? , cuml = ? where idcaissevide = ?',
-                                                        [$request->nbboxEdit,$CalCulCuml,$request->id]);
+                                                        [$request->nbboxEdit,$CalCulCuml,$request->id]);*/
             }
 
               $CaisseRetour = CaisseRetour::where('id',$request->id)->update([
@@ -152,16 +185,15 @@ class CaisseRetourController extends Controller
     {
         $CaisseRetour = CaisseRetour::where('id',$request->id)->delete();
         DB::select("delete from table_cumlcaisseretours where idcaissevide = ?",[$request->id]);
+         DB::select("delete from boncaisseretour where idcaisseretour = ?",[$request->id]);
         return response()->json([
             'status'   => 200,
         ]);
     }
     public function ExtractBonCaisseRetour($id)
     {
-        $getMaxNumberBon = DB::select('SELECT LPAD(IFNULL(MAX(CAST(number AS UNSIGNED))+1, 1), 4, "0") AS number FROM boncaisseretour');
-        $Bons = BonCaisseRetour::create([
-            'number'   => $getMaxNumberBon[0]->number,
-        ]);
+        
+        $getMaxNumberBon = DB::select('select number from boncaisseretour where idcaisseretour = ?',[$id]);
         DB::select('update caisseretour set cloturer = 1 where id =?',[$id]);
         $infos          = DB::select("select * from infos");
 
@@ -170,8 +202,8 @@ class CaisseRetourController extends Controller
 
         $Data = DB::select("select ms.cin,ms.chauffeur,ms.matricule,ms.nbbox,concat(c.nom,' ',c.prenom) as client , '' as siganture,
 
-        (select cuml from table_cumlcaisseretours where idclient = ? and nombre = ?) as cumul,'' as etranger
-        from clients c,caisseretour ms where c.id = ms.idclient and ms.id = ?",[$InfoBon[0]->idclient,$InfoBon[0]->nbbox,$id]);
+        (select cuml from table_cumlcaisseretours where idcaissevide = ? limit 1) as cumul,'' as etranger
+        from clients c,caisseretour ms where c.id = ms.idclient and ms.id = ?",[$id,$id]);
 
         $pdf            = PDF::loadView('Dashboard.CaisseRetour.PrintPDF',compact('Data','getMaxNumberBon','infos'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');

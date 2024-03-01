@@ -65,18 +65,66 @@
                     <div class="card shadow p-3">
                         <div class="form-gorup">
                             <div class="row">
-                                <div class="col-sm-12 col-md-6 col-xl-6">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="background:#d0d0ec">Client</th>
+                                            <th style="background: #aaf5ae;">Nombre</th>
+                                            <th style="background: #f5aaaa;">Produit</th>
+                                            <th style="background: #ffbe6a;">Livreur</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <select name="" id="" class="form-select clientselect">
+                                                    <option value="0">veuillez sélectionner le client</option>
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{$client->id}}">{{$client->nom.' '.$client->prenom}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control caissesortie" placeholder="Nombre">
+                                            </td>
+                                            <td>
+                                                <select name="" id="" class="form-select produit">
+                                                     <option value="0">veuillez sélectionner un produit</option>
+                                                    @foreach ($ListOrigin as $item)
+                                                        <option value="{{$item->title}}">{{$item->title}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="" id="DropDownChauffeur" class="form-select chauffeur">
+                                                    <option value="0">veuillez sélectionner un livreur</option>
+                                                    @foreach ($cheuffeurs as $item)
+                                                        <option value="{{$item->name}}">{{$item->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <input type="text" class="form-control matricule" hidden>
+                                <input type="text" class="form-control CINChauffeur" hidden>
+
+                                {{--<div class="col-sm-12 col-md-6 col-xl-6">
                                     <label for="">Nombre </label>
                                     <input type="number" class="form-control caissesortie" placeholder="Nombre">
                                     <div class="error"></div>
+
                                     <label for="">Produit :</label>
                                     <select name="" id="" class="form-select produit">
                                         @foreach ($ListOrigin as $item)
                                             <option value="{{$item->title}}">{{$item->title}}</option>
                                         @endforeach
                                     </select>
-                                    {{-- <input type="text" class="form-control produit" placeholder="Produit"> --}}
+
                                     <div class="error"></div>
+
+
                                     <label for="">Livreur</label>
                                     <select name="" id="DropDownChauffeur" class="form-select chauffeur">
                                         <option value="0">veuillez sélectionner un chauffeur</option>
@@ -84,9 +132,10 @@
                                             <option value="{{$item->name}}">{{$item->name}}</option>
                                         @endforeach
                                     </select>
-                                    {{-- <input type="text" class="form-control chauffeur"> --}}
+
                                     <div class="error"></div>
                                 </div>
+
                                 <div class="col-sm-12 col-md-6 col-xl-6">
                                     <label for="">Client</label>
                                     <select name="" id="" class="form-select clientselect">
@@ -96,13 +145,15 @@
                                         @endforeach
                                     </select>
                                     <div class="error"></div>
+
                                     <label for="">Matricule</label>
                                     <input type="text" class="form-control matricule" readonly>
                                     <div class="error"></div>
+
                                     <label for="">C.I.N</label>
                                     <input type="text" class="form-control CINChauffeur" readonly>
                                     <div class="error"></div>
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
                     </div>
@@ -359,7 +410,7 @@
 
                                 }
                                 datatable.row.add([
-                                    value.totalsortie,
+                                    parseInt(value.totalsortie),
                                     value.client,
                                     value.chauffeur,
                                     value.matricule,
@@ -518,48 +569,44 @@
             }
             $('.BtnAddTmpMarchSortie').on('click',function()
             {
-                var fields = ['.caissesortie','.produit','.chauffeur','.matricule','.CINChauffeur'];
-                var hasError = false;
-                $('.error').text('');
-                fields.forEach(function(field, index) {
-                    var value = $(field).val().trim();
-                    var errorMessage = '';
-
-                    switch (index) {
-                        case 0:
-                            errorMessage = 'Nombre entrée ne peux pas être vide';
-                            break;
-                        case 1:
-                            errorMessage = 'Client ne peux pas être vide';
-                            break;
-                        case 2:
-                            errorMessage = 'Produit ne peux pas être vide';
-                            break;
-                        case 3:
-                            errorMessage = 'Chauffeur ne peux pas être vide';
-                            break;
-                        case 4:
-                            errorMessage = 'Matricule ne peux pas être vide';
-                            break;
-                            case 5:
-                            errorMessage = 'C.I.N Chauffeur ne peux pas être vide';
-                            break;
-                    }
-
-                    if (value === '') {
-                        $('.error').eq(index).text(errorMessage).css('color','red');
-                        hasError = true;
-                    }
-                });
                 if($('.clientselect').val() == 0)
                 {
-                    $('.clientselect').next('.error').text('Client ne peux pas être vide');
-                    hasError = true;
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Client entrée ne peux pas être vide!",
+                    });
+                    return false;
                 }
-                if (!hasError)
+                if($('.caissesortie').val() == '')
                 {
+                     Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Nombre entrée ne peux pas être vide!",
+                    });
+                    return false;
+                }
+                if($('.produit').val() == 0)
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Produit entrée ne peux pas être vide!",
+                    });
+                    return false;
+                }
 
-                    $.ajax({
+                if($('.chauffeur').val() == 0)
+                {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Chauffeur entrée ne peux pas être vide!",
+                    });
+                    return false;
+                }
+                $.ajax({
                         type: "post",
                         url: "{{url('StoreTmpMarchandiseSortie')}}",
                         data:
@@ -579,18 +626,16 @@
                             {
                                 getTmpMarchandisSortie(idclient);
                                 $('.caissesortie').val("");
-                                $('.produit').val("");
+                                $('.produit').val(0);
                             }
                             if(response.status == 300)
                             {
                                 getTmpMarchandisSortie(idclient);
                                 $('.caissesortie').val("");
-                                $('.produit').val("");
+                                $('.produit').val(0);
                             }
                         }
                     });
-
-                }
 
             });
 

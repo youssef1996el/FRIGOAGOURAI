@@ -13,5 +13,7 @@ class BonMarchandiseEntree extends Model
     protected $fillable =
     [
         'number',
+        'idmarchandisentre',
+        'idcompanie'
     ];
 }

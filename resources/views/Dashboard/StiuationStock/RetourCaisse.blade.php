@@ -24,14 +24,14 @@
                 <tr>
                     <th rowspan="2">Date</th>
                     @foreach ($clientsCaisseRetour as $client)
-                        <th colspan="2">{{ $client }}</th>
+                        <th >{{ $client }}</th>
                     @endforeach
                     <th rowspan="2">Total</th>
                 </tr>
                 <tr>
                     @foreach ($clientsCaisseRetour as $client)
                         <th>nombre</th>
-                        <th>Cumul</th>
+                        {{-- <th>Cumul</th> --}}
                     @endforeach
                     {{-- <th>nombre</th>
                     <th>Cumul</th> --}}
@@ -46,10 +46,11 @@
                         @foreach ($clientsCaisseRetour as $client)
 
                             <td>{{intval($clientsData[$client]['nombre'])  }}</td>
-                            <td>{{intval($clientsData[$client]['Cuml'])  }}</td>
+                           {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td>--}}
 
                         @endforeach
-                        <td>{{intval($totalsCaisseRetour[$date]['totalNombre'])  }}</td>
+                        <td>{{intval($sumByDate[$date])  }}</td>
+                        {{--<td>{{intval($totalsCaisseRetour[$date]['totalNombre'])  }}</td>--}}
                         {{-- <td>{{ $totalsCaisseRetour[$date]['totalCuml'] }}</td> --}}
                     </tr>
                 @endforeach
@@ -66,48 +67,18 @@
                             $sumCuml += $clientsData[$client]['Cuml'];
                         }
                         ?>
-                        <td colspan="2">{{ $sumNombre }}</td>
+                        <td >{{ $sumNombre }}</td>
                         {{-- <td >{{ $sumCuml }}</td> --}}
                     @endforeach
-                    <td colspan="2">{{ $totalsCaisseRetour['grandTotalNombre'] }}</td>
+                     <td >{{ $totalSum }}</td>
+                    {{--<td >{{ $totalsCaisseRetour['grandTotalNombre'] }}</td> --}}
                     {{-- <td >{{ $totalsCaisseRetour['grandTotalCuml'] }}</td> --}}
                 </tr>
             </tfoot>
 
         </table>
-       {{--  {{ $queryCaisseRetour->links() }} --}}
-        {{-- <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th rowspan="2">Date</th>
-                    @foreach ($clientsCaisseRetour as $client)
-                        <th colspan="2">{{ $client }}</th>
-                    @endforeach
-                    <th rowspan="2">Total</th> <!-- Add a total column for each date -->
-                </tr>
-                <tr>
-                    @foreach ($clientsCaisseRetour as $client)
-                        <th>nombre</th>
-                        <th>Cuml</th>
-                    @endforeach
 
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($dataCaisseRetour as $date => $clientsData)
-                    <tr>
-                        <td>{{ $date }}</td>
-                        @foreach ($clientsCaisseRetour as $client)
-                            <td>{{ $clientsData[$client]['nombre'] }}</td>
-                            <td>{{ $clientsData[$client]['Cuml'] }}</td>
-                        @endforeach
-                        <td >{{ $totalsCaisseRetour[$date]['totalNombre'] }}</td> <!-- Total nombre for the date -->
-
-                    </tr>
-                @endforeach
-            </tbody>
-        </table> --}}
     </section>
 
     <style>

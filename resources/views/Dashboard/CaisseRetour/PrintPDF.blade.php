@@ -170,10 +170,12 @@
                 <label for="" style="font-size:20px">Visa Responsable Frigo</label><span>.....................................</span>
             </div>
             <footer class="invoice-footer">
-                <span>C/B : {{$infos[0]->cb}}</span>
+                 <span>SOCIETE : {{$infos[0]->societe}}</span>
+                  <span>SARL au Capital de : {{$infos[0]->capital}}</span>
+                  <span>ICE N° : {{$infos[0]->ice}}</span>
                 <span>IF N° : {{$infos[0]->if}}</span>
-                <span>SARL au Capital de : {{$infos[0]->capital}}</span>
-                <span>ICE N° : {{$infos[0]->ice}}</span>
+                <span>C/B : {{$infos[0]->cb}}</span>
+
 
             </footer>
         </div>

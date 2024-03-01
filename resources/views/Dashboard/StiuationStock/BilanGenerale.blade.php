@@ -36,8 +36,8 @@
                 @foreach($mergedData as $row)
                     <tr>
                         <td style="white-space: nowrap">{{ $row['date'] }}</td>
-                        <td style="background-color: rgb(248, 154, 154)" >{{ $row['caisseVide'] }}</td>
-                        <td style="background-color: rgb(174, 245, 174)">{{ $row['totalEntree'] }}</td>
+                        <td style="background-color: rgb(248, 154, 154)" >{{ intval($row['caisseVide'] )}}</td>
+                        <td style="background-color: rgb(174, 245, 174)">{{ intval($row['totalEntree']) }}</td>
                         <td style="background-color: rgb(114, 235, 205)">{{ $row['totalSortie'] }}</td>
                         <td style="background-color: rgb(247, 211, 211)">{{ $row['caisseRetour'] }}</td>
                     </tr>

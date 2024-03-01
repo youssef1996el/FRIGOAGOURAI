@@ -1,5 +1,5 @@
 
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -231,7 +231,7 @@
             <table id="tableDetailBottom">
                 <thead>
                     <tr>
-                        <th>NOM CHAUFFEUR / MATRICULE</th>
+                        <th>NOM LIVREUR / MATRICULE</th>
                         <th>C.I.N</th>
                         <th style="text-align: center">SIGNATURE</th>
                         <th>NATURE CAISSES</th>
@@ -249,15 +249,17 @@
                 </tbody>
             </table>
             <footer class="invoice-footer">
+                <span>SOCIETE : {{$infos[0]->societe}}</span>
+                 <span>SARL au Capital de : {{$infos[0]->capital}}</span>
+                  <span>ICE N° : {{$infos[0]->ice}}</span>
+                   <span>IF N° : {{$infos[0]->if}}</span>
                 <span>C/B : {{$infos[0]->cb}}</span>
-                <span>IF N° : {{$infos[0]->if}}</span>
-                <span>SARL au Capital de : {{$infos[0]->capital}}</span>
-                <span>ICE N° : {{$infos[0]->ice}}</span>
+
+
+
 
             </footer>
-           {{--  <div style="margin:8px 0px">
-                <label for="" style="font-size:20px">Visa Responsable Frigo</label><span>.....................................</span>
-            </div> --}}
+
         </div>
 
     @endfor
