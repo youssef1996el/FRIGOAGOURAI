@@ -185,7 +185,7 @@
             </div>
 
             <div class="invoice-title">
-                <p class="text-uppercase" style="background-color: #f2f2f2;padding:8px;">bon d'entrée Marchandise n° : <span class="text-uppercase" style="font-size:16px;" >{{$getMaxNumberBon[0]->number}} / 2</span></p>
+                <p class="text-uppercase" style="background-color: #f2f2f2;padding:8px;">bon d'entrée Marchandise n° :  <span class="text-uppercase" style="font-size:16px;" >{{$getMaxNumberBon[0]->number}} / 2</span></p>
             </div>
 
             <div style="background-color: #f2f2f2">

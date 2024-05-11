@@ -314,7 +314,7 @@ class MarchEntreeController extends Controller
     public function ExtractBonMarchEntree($id)
     {
 
-        $getMaxNumberBon = DB::select('select number from bonmarchandiseentree where idmarchandisentre = ?',[$id]);
+        $getMaxNumberBon = DB::select('select IFNULL(number, 1) AS number from bonmarchandiseentree where idmarchandisentre = ?',[$id]);
         $infos = Info::all();
         DB::select('update marchentree set cloturer = 1 where id =?',[$id]);
         $Clients = DB::select("select concat(c.nom,' ',c.prenom) as client from marchentree me ,clients c

@@ -1,4 +1,4 @@
-{{--
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -86,8 +86,16 @@
 </html>
 
 
- --}}
- <!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+ {{-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -113,8 +121,7 @@
       <div class="error__title">404</div>
       <div class="error__subtitle">Hmmm...</div>
       <div class="error__description">Système sur le point d'expirer : Veuillez prendre des mesures <br> appropriées pour le renouvellement  ou la mise à jour afin d'assurer <br> la continuité  des opérations. Besoin d'aide ? Contactez-nous.</div>
-     {{--  <button class="error__button error__button--active">LOGIN</button>
-      <button class="error__button">CONTACT</button> --}}
+
     </div>
 
     <div class="astronaut">
@@ -606,4 +613,4 @@ function animate() {
 drawVisor();
 animate();
 </script>
-</html>
+</html> --}}
