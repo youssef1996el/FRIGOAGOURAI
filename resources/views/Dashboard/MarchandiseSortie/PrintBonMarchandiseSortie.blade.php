@@ -165,9 +165,9 @@
                             $totalCaisse += $item->qte;
                         @endphp
                         <tr>
-                            <td>{{$item->qte}}</td>
+                            <td>{{intval($item->qte)}}</td>
                             <td>{{$item->produit}}</td>
-                            <td>{{$item->cumul}}</td>
+                            <td>{{intval($item->cumul)}}</td>
                             <td></td>
                         </tr>
                     @endforeach

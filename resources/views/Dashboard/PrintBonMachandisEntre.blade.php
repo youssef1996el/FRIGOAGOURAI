@@ -214,9 +214,9 @@
                             $totalCaisse += $item->qteentree;
                         @endphp
                         <tr>
-                            <td>{{$item->qteentree}}</td>
+                            <td>{{intval($item->qteentree)}}</td>
                             <td>{{$item->produit}}</td>
-                            <td>{{$item->cumul}}</td>
+                            <td>{{intval($item->cumul)}}</td>
                             <td></td>
                         </tr>
                     @endforeach

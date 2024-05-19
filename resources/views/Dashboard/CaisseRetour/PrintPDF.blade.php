@@ -155,11 +155,11 @@
                 <tbody>
                     @foreach ($Data as $item)
                         <tr>
-                            <td>{{$item->nbbox}}</td>
+                            <td>{{intval($item->nbbox)}}</td>
                             <td style="text-align: center">{{$item->chauffeur." / ".$item->matricule}}</td>
                             <td>{{$item->cin}}</td>
                             <td>{{$item->siganture}}</td>
-                            <td>{{$item->cumul}}</td>
+                            <td>{{intval($item->cumul)}}</td>
                             <td>{{ $item->etranger}}</td>
                         </tr>
                     @endforeach
