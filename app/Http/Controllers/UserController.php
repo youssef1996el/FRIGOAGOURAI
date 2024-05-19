@@ -212,6 +212,7 @@ class UserController extends Controller
 
             $input['password'] = Hash::make($input['password']);
 
+
         }else{
 
             $input = array_except($input,array('password'));

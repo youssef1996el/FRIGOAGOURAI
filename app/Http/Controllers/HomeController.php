@@ -9,7 +9,7 @@ use App\Models\Marchsortie;
 use App\Models\MarchEntree;
 use App\Models\MarchandiseSortie;
 use App\Models\User;
-
+use Hash;
 class HomeController extends Controller
 {
     /**
@@ -97,7 +97,7 @@ class HomeController extends Controller
             $user = User::where('id',$request->id)->update([
                 'name'     => $request->name,
                 'email'    => $request->email,
-                'password' => $request->password,
+                'password' => Hash::make($request->password),
                 'role_name'=> $request->Role
             ]);
             return response()->json([
