@@ -51,6 +51,7 @@
                 </tr>
             </tbody>
         </table>
+        <p>Total caisse vide clients = {{ $totals['caisseVide'] - $totals['caisseRetour'] }}</p>
 
     </section>
    <style>
