@@ -24,11 +24,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('checkuser',function()
-{
-    $uuid = shell_exec('wmic csproduct get uuid');
-    dd($uuid);
-});
+
 Route::group(['middleware' => ['auth']], function()
 {
 
