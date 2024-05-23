@@ -24,9 +24,13 @@ class MarchEntreeController extends Controller
 {
     public function index()
     {
-        $clients = Client::all();
+        $clients = Client::orderBy('nom')->get();
+        $chauffeurs = Chauffeur::orderBy('name')->get();
+
+
+       /*  $clients = Client::all(); */
         $Origine = ListOrigin::all();
-        $chauffeurs = Chauffeur::all();
+       /*  $chauffeurs = Chauffeur::all(); */
         return view('Dashboard.MarchEntree')->with('clients',$clients)->with('Origine',$Origine)->with('chauffeurs',$chauffeurs);
     }
 
