@@ -53,62 +53,65 @@
                 </tr>
             </tfoot>
         </table> --}}
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th rowspan="2">Date</th>
-                    @foreach ($clientsMarchEntree as $client)
-                        <th >{{ $client }}</th>
-                    @endforeach
-                    <th rowspan="2">Total</th>
-                </tr>
-                <tr>
-                    @foreach ($clientsMarchEntree as $client)
-                        <th>nombre</th>
-                        {{-- <th>Cumul</th> --}}
-                    @endforeach
-                   {{--  <th>nombre</th> --}}
-                    {{-- <th>Cumul</th> --}}
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach ($dataMarchEntree as $date => $clientsData)
-
+        <div style="overflow-x: auto">
+            <table class="table table-striped table-bordered">
+                <thead>
                     <tr>
-                        <td style="white-space: nowrap">{{ $date }}</td>
+                        <th rowspan="2">Date</th>
                         @foreach ($clientsMarchEntree as $client)
-
-                            <td>{{intval($clientsData[$client]['nombre'])  }}</td>
-                            {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
-
+                            <th >{{ $client }}</th>
                         @endforeach
-                        <td>{{intval($totalsMarchEntree[$date]['totalNombre'])  }}</td>
-                        {{-- <td>{{ $totalsMarchEntree[$date]['totalCuml'] }}</td> --}}
+                        <th rowspan="2">Total</th>
                     </tr>
-                @endforeach
-            </tbody>
-            <tfoot >
-                <tr >
-                    <td>Totaux</td>
-                    @foreach ($clientsMarchEntree as $client)
-                        <?php
-                        $sumNombre = 0;
-                        $sumCuml = 0;
-                        foreach ($dataMarchEntree as $date => $clientsData) {
-                            $sumNombre += $clientsData[$client]['nombre'];
-                            $sumCuml += $clientsData[$client]['Cuml'];
-                        }
-                        ?>
-                        <td >{{ $sumNombre }}</td>
-                        {{-- <td >{{ $sumCuml }}</td> --}}
-                    @endforeach
-                    <td >{{ $totalsMarchEntree['grandTotalNombre'] }}</td>
-                   {{--  <td >{{ $totalsMarchEntree['grandTotalCuml'] }}</td> --}}
-                </tr>
-            </tfoot>
+                    <tr>
+                        @foreach ($clientsMarchEntree as $client)
+                            <th>nombre</th>
+                            {{-- <th>Cumul</th> --}}
+                        @endforeach
+                       {{--  <th>nombre</th> --}}
+                        {{-- <th>Cumul</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
 
-        </table>
+                    @foreach ($dataMarchEntree as $date => $clientsData)
+
+                        <tr>
+                            <td style="white-space: nowrap">{{ $date }}</td>
+                            @foreach ($clientsMarchEntree as $client)
+
+                                <td>{{intval($clientsData[$client]['nombre'])  }}</td>
+                                {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
+
+                            @endforeach
+                            <td>{{intval($totalsMarchEntree[$date]['totalNombre'])  }}</td>
+                            {{-- <td>{{ $totalsMarchEntree[$date]['totalCuml'] }}</td> --}}
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot >
+                    <tr >
+                        <td>Totaux</td>
+                        @foreach ($clientsMarchEntree as $client)
+                            <?php
+                            $sumNombre = 0;
+                            $sumCuml = 0;
+                            foreach ($dataMarchEntree as $date => $clientsData) {
+                                $sumNombre += $clientsData[$client]['nombre'];
+                                $sumCuml += $clientsData[$client]['Cuml'];
+                            }
+                            ?>
+                            <td >{{ $sumNombre }}</td>
+                            {{-- <td >{{ $sumCuml }}</td> --}}
+                        @endforeach
+                        <td >{{ $totalsMarchEntree['grandTotalNombre'] }}</td>
+                       {{--  <td >{{ $totalsMarchEntree['grandTotalCuml'] }}</td> --}}
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
         {{-- {{ $query->links() }} --}}
     </section>
 
@@ -124,6 +127,10 @@
             }
 
 
+        }
+        #bodywrapper
+        {
+            overflow-x: auto;
         }
     </style>
     <script>
