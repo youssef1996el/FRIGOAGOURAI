@@ -151,7 +151,7 @@
                 <thead>
                     <tr>
                         <th>NOMBRE DE CAISSE</th>
-                        <th style="text-align: center">ORIGINE</th>
+                        <th style="text-align: center">PRODUIT</th>
                         <th>Cumul</th>
                         <th>Etranger</th>
                     </tr>
@@ -174,7 +174,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4">{{ number_format($totalCaisse, 2, ',', '.') }}</td>
+                        <td colspan="4">{{ intval($totalCaisse) }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -184,7 +184,7 @@
                     <tr>
                         <th>NOM CHAUFFEUR / MATRICULE</th>
                         <th>C.I.N</th>
-                        <th style="text-align: center">SIGNATURE</th>
+                        <th style="text-align: center">SIGNATURE LIVREUR</th>
                         <th>NATURE CAISSES</th>
                         <th>VISA FRIGO</th>
                     </tr>
@@ -194,7 +194,7 @@
                         <td>{{$ChauffeurAndMatricule[0]->chauffeur." / ".$ChauffeurAndMatricule[0]->matricule}}</td>
                         <td>{{$ChauffeurAndMatricule[0]->cin}}</td>
                         <td></td>
-                        <td></td>
+                        <td>1er choix </td>
                         <td style="width: 150px"></td>
                     </tr>
                 </tbody>

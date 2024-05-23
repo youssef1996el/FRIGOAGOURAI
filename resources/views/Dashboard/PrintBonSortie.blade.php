@@ -137,7 +137,7 @@
                         <th>Nombre de Caisse</th>
                         <th style="text-align: center">Nom Livreur / Matricule</th>
                         <th>CIN</th>
-                        <th>Signature</th>
+                        <th>Signature livreur</th>
                         <th>Cumul</th>
                         <th>Etranger</th>
                     </tr>
