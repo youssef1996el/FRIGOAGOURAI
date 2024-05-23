@@ -24,7 +24,16 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('checkuser',function()
+{
+    $shellexec = exec('getmac');
+    // Remove spaces
+    $shellexec = str_replace(' ', '', $shellexec);
 
+    // Remove 'N/A' string
+    $shellexec = str_replace('N/A', '', $shellexec);
+    dd($shellexec);
+});
 Route::group(['middleware' => ['auth']], function()
 {
 
