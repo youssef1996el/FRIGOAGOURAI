@@ -24,10 +24,15 @@ class MarchandiseSortieController extends Controller
 {
     public function index()
     {
+        $clients = Client::orderBy('nom')->get();
+        $cheuffeurs = Chauffeur::orderBy('name')->get();
 
-        $clients = Client::all();
+
+
+
+      /*   $clients = Client::all(); */
         $ListOrigin = ListOrigin::all();
-        $cheuffeurs = Chauffeur::all();
+       /*  $cheuffeurs = Chauffeur::all(); */
         return view('Dashboard.MarchandiseSortie.index')->with('clients',$clients)
         ->with('ListOrigin',$ListOrigin)
         ->with('cheuffeurs',$cheuffeurs);
