@@ -28,14 +28,7 @@
                         @endforeach
                         <th rowspan="2">Total</th>
                     </tr>
-                    <tr>
-                        @foreach ($clientsCaisseVide as $client)
-                             <th >nombre</th>
-                            {{-- <th>Cumul</th> --}}
-                        @endforeach
-                       {{--  <th>nombre</th> --}}
-                        {{-- <th>Cumul</th> --}}
-                    </tr>
+
                 </thead>
                 <tbody>
 
