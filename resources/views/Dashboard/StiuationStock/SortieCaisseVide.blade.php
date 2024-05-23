@@ -18,62 +18,65 @@
                     </div>
             </div>
          </form>
-        <table class="table table-striped table-bordered" style="overflow-x: auto">
-            <thead>
-                <tr>
-                    <th rowspan="2">Date</th>
-                    @foreach ($clientsCaisseVide as $client)
-                        <th >{{ $client }}</th>
-                    @endforeach
-                    <th rowspan="2">Total</th>
-                </tr>
-                <tr>
-                    @foreach ($clientsCaisseVide as $client)
-                         <th >nombre</th>
-                        {{-- <th>Cumul</th> --}}
-                    @endforeach
-                   {{--  <th>nombre</th> --}}
-                    {{-- <th>Cumul</th> --}}
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach ($dataCaisseVide as $date => $clientsData)
-
+         <div style="overflow-x: auto">
+            <table class="table table-striped table-bordered" >
+                <thead>
                     <tr>
-                        <td style="white-space: nowrap">{{ $date }}</td>
+                        <th rowspan="2">Date</th>
                         @foreach ($clientsCaisseVide as $client)
-
-                            <td >{{intval($clientsData[$client]['nombre'])  }}</td>
-                            {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
-
+                            <th >{{ $client }}</th>
                         @endforeach
-                        <td >{{intval($totalsCaisseVide[$date]['totalNombre'])  }}</td>
-                        {{-- <td>{{ $totalsCaisseVide[$date]['totalCuml'] }}</td> --}}
+                        <th rowspan="2">Total</th>
                     </tr>
-                @endforeach
-            </tbody>
-            <tfoot >
-                <tr >
-                    <td>Totaux</td>
-                    @foreach ($clientsCaisseVide as $client)
-                        <?php
-                        $sumNombre = 0;
-                        $sumCuml = 0;
-                        foreach ($dataCaisseVide as $date => $clientsData) {
-                            $sumNombre += $clientsData[$client]['nombre'];
-                            $sumCuml += $clientsData[$client]['Cuml'];
-                        }
-                        ?>
-                        <td >{{ $sumNombre }}</td>
-                        {{-- <td >{{ $sumCuml }}</td> --}}
-                    @endforeach
-                    <td >{{ $totalsCaisseVide['grandTotalNombre'] }}</td>
-                    {{-- <td >{{ $totalsCaisseVide['grandTotalCuml'] }}</td> --}}
-                </tr>
-            </tfoot>
+                    <tr>
+                        @foreach ($clientsCaisseVide as $client)
+                             <th >nombre</th>
+                            {{-- <th>Cumul</th> --}}
+                        @endforeach
+                       {{--  <th>nombre</th> --}}
+                        {{-- <th>Cumul</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
 
-        </table>
+                    @foreach ($dataCaisseVide as $date => $clientsData)
+
+                        <tr>
+                            <td style="white-space: nowrap">{{ $date }}</td>
+                            @foreach ($clientsCaisseVide as $client)
+
+                                <td >{{intval($clientsData[$client]['nombre'])  }}</td>
+                                {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
+
+                            @endforeach
+                            <td >{{intval($totalsCaisseVide[$date]['totalNombre'])  }}</td>
+                            {{-- <td>{{ $totalsCaisseVide[$date]['totalCuml'] }}</td> --}}
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot >
+                    <tr >
+                        <td>Totaux</td>
+                        @foreach ($clientsCaisseVide as $client)
+                            <?php
+                            $sumNombre = 0;
+                            $sumCuml = 0;
+                            foreach ($dataCaisseVide as $date => $clientsData) {
+                                $sumNombre += $clientsData[$client]['nombre'];
+                                $sumCuml += $clientsData[$client]['Cuml'];
+                            }
+                            ?>
+                            <td >{{ $sumNombre }}</td>
+                            {{-- <td >{{ $sumCuml }}</td> --}}
+                        @endforeach
+                        <td >{{ $totalsCaisseVide['grandTotalNombre'] }}</td>
+                        {{-- <td >{{ $totalsCaisseVide['grandTotalCuml'] }}</td> --}}
+                    </tr>
+                </tfoot>
+
+            </table>
+         </div>
+
        {{--  {{ $queryCaisseVide->links() }} --}}
     </section>
     <style>
