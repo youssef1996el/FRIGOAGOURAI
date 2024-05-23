@@ -21,7 +21,8 @@ class MarchSortieController extends Controller
     public function index()
     {
        $clients = Client::orderBy('nom')->get();
-        $Chauffeur = Chauffeur::all();
+       $Chauffeur = Chauffeur::orderBy('name')->get();
+
         return view('Dashboard.MarchSorite')->with('clients',$clients)->with('Chauffeur',$Chauffeur);
     }
     public function GetMarchSorite()
