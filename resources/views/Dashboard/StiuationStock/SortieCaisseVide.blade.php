@@ -18,7 +18,7 @@
                     </div>
             </div>
          </form>
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered" style="overflow-x: auto">
             <thead>
                 <tr>
                     <th rowspan="2">Date</th>
