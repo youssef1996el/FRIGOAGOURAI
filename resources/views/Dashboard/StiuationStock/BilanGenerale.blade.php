@@ -51,7 +51,8 @@
                 </tr>
             </tbody>
         </table>
-        <p>Total caisse vide clients = {{ $totals['caisseVide'] - $totals['caisseRetour'] }}</p>
+        <p>Caisse vide chez clients = {{ $totals['caisseVide'] - $totals['caisseRetour'] }}</p>
+        <p>Marchandises dans le frigo = {{ $totals['totalEntree'] - $totals['totalSortie'] }}</p>
 
     </section>
    <style>
