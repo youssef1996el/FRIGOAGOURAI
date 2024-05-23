@@ -19,8 +19,13 @@ class CaisseRetourController extends Controller
 {
     public function index()
     {
-        $chauffeurs = Chauffeur::all();
-        $clients = Client::all();
+
+
+        $clients = Client::orderBy('nom')->get();
+        $chauffeurs = Chauffeur::orderBy('name')->get();
+
+      /*   $chauffeurs = Chauffeur::all();
+        $clients = Client::all(); */
         return view('Dashboard.CaisseRetour.index')->with('clients',$clients)->with('chauffeurs',$chauffeurs);
     }
 
@@ -192,7 +197,7 @@ class CaisseRetourController extends Controller
     }
     public function ExtractBonCaisseRetour($id)
     {
-        
+
         $getMaxNumberBon = DB::select('select number from boncaisseretour where idcaisseretour = ?',[$id]);
         DB::select('update caisseretour set cloturer = 1 where id =?',[$id]);
         $infos          = DB::select("select * from infos");
