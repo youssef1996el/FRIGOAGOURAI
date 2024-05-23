@@ -145,7 +145,7 @@
                 <td style="background-color: rgb(247, 211, 211)"></td>
             </tr>
             <tr>
-                <th>Total Final</th>
+                <th>Total </th>
                 <th style="background-color: rgb(248, 154, 154)">{{ $totalss['caisseVide'] }}</th>
 
                 @php
@@ -163,8 +163,8 @@
 
 
     <div class="p-2 bg-light border mt-3">
-        <p class=" fs-3"> restant caisses vides chez client    = <span>{{$totalss['caisseVide'] - $totalss['caisseRetour']}}</span></p>
-        <p class="fs-3">resatant marachandise en stock= <span>{{$totalEntree - $totalSortie}}</span></p>
+        <p class=" fs-3">  Caisses vides chez client    = <span>{{$totalss['caisseVide'] - $totalss['caisseRetour']}}</span></p>
+        <p class="fs-3"> Marachandise en stock= <span>{{$totalEntree - $totalSortie}}</span></p>
     </div>
 
 
