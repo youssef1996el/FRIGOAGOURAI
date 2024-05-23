@@ -319,7 +319,7 @@ class MarchEntreeController extends Controller
         DB::select('update marchentree set cloturer = 1 where id =?',[$id]);
         $Clients = DB::select("select concat(c.nom,' ',c.prenom) as client from marchentree me ,clients c
                             where me.client_id = c.id and me.id=  ?",[$id]);
-        $ChauffeurAndMatricule = DB::select('select matricule,chauffeur,cin from marchentree');
+        $ChauffeurAndMatricule = DB::select('select matricule,chauffeur,cin from marchentree where id= ?',[$id]);
 
         $InfoBon = DB::select('select totalentree,client_id from marchentree where id = ?',[$id]);
 
