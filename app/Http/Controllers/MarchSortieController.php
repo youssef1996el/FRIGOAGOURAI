@@ -20,7 +20,7 @@ class MarchSortieController extends Controller
 {
     public function index()
     {
-        $clients = Client::all();
+       $clients = Client::orderBy('nom')->get();
         $Chauffeur = Chauffeur::all();
         return view('Dashboard.MarchSorite')->with('clients',$clients)->with('Chauffeur',$Chauffeur);
     }
