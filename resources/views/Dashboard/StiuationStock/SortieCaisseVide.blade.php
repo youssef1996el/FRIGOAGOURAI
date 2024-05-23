@@ -93,6 +93,10 @@
 
 
         }
+        #bodywrapper
+        {
+            overflow-x: auto;
+        }
 
     </style>
 
