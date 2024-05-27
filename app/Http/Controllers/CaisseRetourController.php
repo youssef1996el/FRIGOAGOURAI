@@ -209,8 +209,9 @@ class CaisseRetourController extends Controller
 
         (select cuml from table_cumlcaisseretours where idcaissevide = ? limit 1) as cumul,'' as etranger
         from clients c,caisseretour ms where c.id = ms.idclient and ms.id = ?",[$id,$id]);
+        $dateBon   = DB::select('select date(created_at) as date from caisseretour where id = ?',[$id]);
 
-        $pdf            = PDF::loadView('Dashboard.CaisseRetour.PrintPDF',compact('Data','getMaxNumberBon','infos'))
+        $pdf            = PDF::loadView('Dashboard.CaisseRetour.PrintPDF',compact('Data','getMaxNumberBon','infos','dateBon'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');
         return $pdf->download('bon de retour caisses vides.pdf');
     }

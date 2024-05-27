@@ -331,8 +331,8 @@ class MarchEntreeController extends Controller
         (select cuml from table_cumlmarchandiseentree where idmarchaentre = ? limit 1) as cumul
         from lignemarchentree where marchentree_id = ?",
         [$id,$id]);
-
-        $pdf            = PDF::loadView('Dashboard.PrintBonMachandisEntre',compact('Data','Clients','infos','ChauffeurAndMatricule','getMaxNumberBon'))
+        $dateBon   = DB::select('select date(created_at) as date from marchentree where id = ?',[$id]);
+        $pdf            = PDF::loadView('Dashboard.PrintBonMachandisEntre',compact('Data','Clients','infos','ChauffeurAndMatricule','getMaxNumberBon','dateBon'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');
         return $pdf->download('Bon d\'entrée Marchandise.pdf');
 

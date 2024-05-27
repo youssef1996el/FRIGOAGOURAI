@@ -141,7 +141,7 @@
 
             <div style="background-color: #f2f2f2">
                 <div style="padding: 8px">
-                    <h4>Date :</h4> <span>@php echo date('d-m-Y') @endphp</span><br>
+                    <h4>Date :</h4> <span>{{$dateBon[0]->date}}</span><br>
                     <h4>Nom du client :</h4><span>{{$Clients[0]->client}}</span><br>
                     <h4>Bon délivré par :</h4><span>{{Auth::user()->name}}</span>
                 </div>
@@ -200,6 +200,11 @@
                 </tbody>
             </table>
             <footer class="invoice-footer">
+                <p>-bon délivré par {{Auth::user()->name}} le @php echo date('d/m/Y') @endphp  à @php
+                    $date = new DateTime('now', new DateTimeZone('UTC'));
+                    $date->modify('+1 hour');
+                    echo $date->format('H:i');
+                @endphp</p>
                 <span>SOCIETE : {{$infos[0]->societe}}</span>
                 <span>SARL au Capital de : {{$infos[0]->capital}}</span>
                 <span>ICE N° : {{$infos[0]->ice}}</span>

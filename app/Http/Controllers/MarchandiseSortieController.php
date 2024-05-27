@@ -285,8 +285,8 @@ class MarchandiseSortieController extends Controller
         $Data = DB::select("select qte,produit,
         (select cuml from table_cumlmarchandisesortie where idmarchasortie = ? limit 1) as cumul
         from lignemarchandisesortie where idmarchandisesortie = ?",[$id,$id]);
-
-         $pdf            = PDF::loadView('Dashboard.MarchandiseSortie.PrintBonMarchandiseSortie',compact('Data','Clients','infos','ChauffeurAndMatricule','getMaxNumberBon'))
+        $dateBon   = DB::select('select date(created_at) as date from marchandisesortie where id = ?',[$id]);
+         $pdf            = PDF::loadView('Dashboard.MarchandiseSortie.PrintBonMarchandiseSortie',compact('Data','Clients','infos','ChauffeurAndMatricule','getMaxNumberBon','dateBon'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');
         return $pdf->download('Bon de sortie Marchandise.pdf');
 
