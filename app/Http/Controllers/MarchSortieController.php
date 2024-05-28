@@ -259,12 +259,15 @@ class MarchSortieController extends Controller
         $getMaxNumberBon = DB::select('select number from boncaissevides where idcaissevide = ?',[$id]);
         $infos          = DB::select("select * from infos");
         $InfoBon = DB::select('select nbbox,client_id from marchsorites where id = ?',[$id]);
+
         $Data = DB::select("select ms.cin,ms.chauffeur,ms.matricule,ms.nbbox,concat(c.nom,' ',c.prenom) as client , '' as siganture,
                             (select cuml from table_cumlcaissevides where idcaissevide = ?  limit 1) as cumul,
                             '' as etranger
                             from clients c,marchsorites ms where c.id = ms.client_id and ms.id = ?",
 
                             [$id,$id]);
+
+
         $count = count($Data);
 
         $dateBon   = DB::select('select date(created_at) as date from marchsorites where id = ?',[$id]);
