@@ -127,7 +127,7 @@
                 <div style="padding: 8px">
                     <h4>Date :</h4> <span>{{$dateBon[0]->date}} </span><br>
                     <h4>Nom du client :</h4><span>{{$Data[0]->client}}</span><br>
-                    <h4>Bon délivré par :</h4><span>{{Auth::user()->name}}</span>
+                   
                 </div>
             </div>
 

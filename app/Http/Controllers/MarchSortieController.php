@@ -270,7 +270,7 @@ class MarchSortieController extends Controller
         $dateBon   = DB::select('select date(created_at) as date from marchsorites where id = ?',[$id]);
 
         DB::select('update marchsorites set cloturer = 1 where id =?',[$id]);
-       /*  return view('Dashboard.PrintBonSortie',compact('Data','getMaxNumberBon','infos')); */
+
         $pdf            = PDF::loadView('Dashboard.PrintBonSortie',compact('Data','getMaxNumberBon','infos','count','dateBon'))
         ->setOptions(['defaultFnt' => 'san-serif'])->setPaper('a4');
         return $pdf->download('Bon De Caisse Sortie.pdf');
