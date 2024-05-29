@@ -1,5 +1,7 @@
 @extends('Dashboard.index')
 @section('contentDashboard')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
 <section>
     <h3 class="bg-light p-2 rounded-2 border">Table Sortie de  Marchandises</h3>
     <form action="{{url('SortieMarchByCompagnie')}}" method="get">
@@ -15,13 +17,14 @@
                 </div>
                 <div class="col-sm-12 col-md-6 col-xl-6 ">
                     <button class="btn btn-secondary mr-3 float-end mt-4" type="submit">Recherche</button>
+                    <button class="btn btn-info mr-3 float-end mt-4 me-3" type="button" onclick="generatePDF()">Print</button>
                 </div>
         </div>
      </form>
-    {{-- table Marchandise sortie --}}
+
     <div style="overflow-x: auto">
 
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered" id="my-table">
             <thead>
                 <tr>
                     <th rowspan="2">Date</th>
@@ -30,14 +33,7 @@
                     @endforeach
                     <th rowspan="2">Total</th>
                 </tr>
-                <tr>
-                    @foreach ($clientsMarchSortie as $client)
-                        <th>nombre</th>
-                        {{-- <th>Cumul</th> --}}
-                    @endforeach
-                    {{-- <th>nombre</th>
-                    <th>Cumul</th> --}}
-                </tr>
+
             </thead>
             <tbody>
 
@@ -48,11 +44,11 @@
                         @foreach ($clientsMarchSortie as $client)
 
                             <td>{{intval($clientsData[$client]['nombre'])  }}</td>
-                            {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
+
 
                         @endforeach
                         <td>{{intval($totalsMarchSortie[$date]['totalNombre'])  }}</td>
-                        {{-- <td>{{ $totalsMarchSortie[$date]['totalCuml'] }}</td> --}}
+
                     </tr>
                 @endforeach
             </tbody>
@@ -69,51 +65,17 @@
                         }
                         ?>
                         <td >{{ $sumNombre }}</td>
-                        {{-- <td >{{ $sumCuml }}</td> --}}
+
                     @endforeach
                     <td >{{ $totalsMarchSortie['grandTotalNombre'] }}</td>
-                    {{-- <td >{{ $totalsMarchSortie['grandTotalCuml'] }}</td> --}}
+
                 </tr>
             </tfoot>
 
         </table>
     </div>
 
-    {{-- <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th rowspan="2">Date</th>
-                @foreach ($clientsSortie as $client)
-                    <th colspan="2">{{ $client }}</th>
-                @endforeach
-            </tr>
-            <tr>
-                @foreach ($clientsSortie as $client)
-                    <th>nombre</th>
-                    <th>Cuml</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($dataSortie as $date => $clientsData)
-                <tr>
-                    <td>{{ $date }}</td>
-                    @foreach ($clientsSortie as $client)
-                        <td>{{ $clientsData[$client]['nombre'] }}</td>
-                        <td>0</td>
-                    @endforeach
-                </tr>
-            @endforeach
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>totaux</td>
-                @foreach ($clientsSortie as $client)
-                    <td colspan="2">{{ $totalsSortie[$client] }}</td>
-                @endforeach
-            </tr>
-        </tfoot>
-    </table> --}}
+
 </section>
 <style>
     .listStockage .three-menu-item {
@@ -134,6 +96,89 @@
             overflow-x: auto;
         }
 </style>
+<script>
+
+
+    function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape', 'pt', 'a4');
+    const totalColumns = document.querySelectorAll('#my-table thead th').length - 2;
+    const maxColumnsPerPage = 10;
+    const pagesNeeded = Math.ceil(totalColumns / maxColumnsPerPage);
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    const currentDate = new Date().toLocaleDateString();
+
+    for (let page = 0; page < pagesNeeded; page++) {
+        const startColumn = page * maxColumnsPerPage;
+        const endColumn = Math.min(startColumn + maxColumnsPerPage, totalColumns);
+
+
+        const headerColumns = Array.from(document.querySelectorAll('#my-table thead th')).slice(startColumn + 1, endColumn + 1);
+
+
+        const headers = ["Date", ...headerColumns.map(th => th.innerText)];
+
+
+        const isLastPage = (page === pagesNeeded - 1);
+
+        if (isLastPage) {
+            headers.push("Total");
+        }
+
+
+        const rows = Array.from(document.querySelectorAll('#my-table tbody tr')).map(row => {
+            const cells = Array.from(row.querySelectorAll('td')).slice(startColumn + 1, endColumn + 1);
+            const rowData = [row.querySelector('td').innerText, ...cells.map(cell => cell.innerText)];
+            if (isLastPage) {
+                rowData.push(row.querySelector('td:last-child').innerText);
+            }
+            return rowData;
+        });
+
+
+        const footerCells = Array.from(document.querySelectorAll('#my-table tfoot tr td')).slice(startColumn + 1, endColumn + 1);
+        const foot = [["Totaux", ...footerCells.map(td => td.innerText)]];
+        if (isLastPage) {
+            foot[0].push(document.querySelector('#my-table tfoot tr td:last-child').innerText);
+        }
+
+
+        doc.autoTable({
+            head: [headers],
+            body: rows,
+            foot: foot,
+            startY: page === 0 ? 40 : doc.lastAutoTable.finalY + 20,
+            styles: {
+                fontSize: 8,
+                cellPadding: 3,
+                overflow: 'linebreak'
+            },
+            columnStyles: {
+                0: {cellWidth: 'auto'},
+            },
+            margin: {top: 30, left: 10, right: 10},
+            didDrawPage: function (data) {
+
+                doc.setFontSize(14);
+                const title = "Table Sortie de Marchandises";
+                const titleWidth = doc.getTextWidth(title);
+                const titleX = (pageWidth - titleWidth) / 2;
+                doc.setFillColor(240, 240, 240);
+                doc.rect(titleX - 5, 10, titleWidth + 10, 20, 'F');
+                doc.text(title, titleX, 25);
+
+
+                doc.setFontSize(10);
+                const dateWidth = doc.getTextWidth(currentDate);
+                doc.text(currentDate, pageWidth - dateWidth - 10, 10);
+            }
+        });
+    }
+
+    doc.save('Table Sortie de Marchandises.pdf');
+}
+</script>
 <script>
     $(document).ready(function () {
         var currentPath = window.location.pathname;

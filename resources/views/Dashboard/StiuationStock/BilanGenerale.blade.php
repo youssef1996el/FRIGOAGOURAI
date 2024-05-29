@@ -1,6 +1,7 @@
 @extends('Dashboard.index')
 @section('contentDashboard')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
     <section>
         <h3 class="border p-2 bg-light rounded-2">Le bilan général</h3>
         <div class="noPrint">
@@ -17,6 +18,7 @@
                         </div>
                         <div class="col-sm-12 col-md-6 col-xl-6 ">
                             <button class="btn btn-secondary mr-3 float-end mt-4" type="submit">Recherche</button>
+                            <button class="btn btn-info mr-3 float-end mt-4 me-3" type="button" onclick="generatePDF()">Print</button>
                         </div>
                 </div>
              </form>
@@ -51,8 +53,9 @@
                 </tr>
             </tbody>
         </table>
-        <p class="bg-light p-2 border mt-3 fs-3">Caisse vide chez clients = <span class="fs-3">{{ $totals['caisseVide'] - $totals['caisseRetour'] }}</span> </p>
+        <p class="bg-light p-2 border mt-3 fs-3">Caisses vides retirées = <span class="fs-3">{{ $totals['caisseVide'] - $totals['caisseRetour'] }}</span> </p>
         <p class="bg-light p-2 border mt-2 fs-3">Marchandises dans le frigo = <span class="fs-3">{{ $totals['totalEntree'] - $totals['totalSortie'] }}</span> </p>
+        <p class="bg-light p-2 border mt-2 fs-3">Caisses vides non remplis = <span class="fs-3">{{ ($totals['caisseVide'] - $totals['caisseRetour']) - ($totals['totalEntree'] - $totals['totalSortie']) }}</span> </p>
 
     </section>
    <style>
@@ -84,6 +87,62 @@
             font-weight: bold;
         }
    </style>
+   <script>
+
+
+function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'pt', 'a4');
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        const currentDate = new Date().toLocaleDateString();
+
+        const tableElement = document.getElementById('tableBilan');
+        const tableHeader = tableElement.querySelector('thead');
+        const tableBody = tableElement.querySelector('tbody');
+
+        // Extract headers
+        const headers = Array.from(tableHeader.querySelectorAll('th')).map(th => th.innerText);
+
+        // Extract body rows
+        const rows = Array.from(tableBody.querySelectorAll('tr')).map(row => {
+            return Array.from(row.querySelectorAll('td')).map(cell => cell.innerText);
+        });
+
+        // Create a table in PDF
+        doc.autoTable({
+            head: [headers],
+            body: rows,
+            startY: 40,
+            styles: {
+                fontSize: 8,
+                cellPadding: 3,
+                overflow: 'linebreak'
+            },
+            columnStyles: {
+                0: {cellWidth: 'auto'},
+            },
+            margin: {top: 30, left: 10, right: 10},
+            didDrawPage: function (data) {
+                // Center the title
+                doc.setFontSize(14);
+                const title = "Le bilan général";
+                const titleWidth = doc.getTextWidth(title);
+                const titleX = (pageWidth - titleWidth) / 2;
+                doc.setFillColor(240, 240, 240); // Light grey background
+                doc.rect(titleX - 5, 10, titleWidth + 10, 20, 'F');
+                doc.text(title, titleX, 25);
+
+                // Print current date on the top right
+                doc.setFontSize(10);
+                const dateWidth = doc.getTextWidth(currentDate);
+                doc.text(currentDate, pageWidth - dateWidth - 10, 10);
+            }
+        });
+
+        doc.save('Le bilan général.pdf');
+    }
+    </script>
     <script>
         $(document).ready(function ()
         {

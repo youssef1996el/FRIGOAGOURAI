@@ -1,5 +1,7 @@
 @extends('Dashboard.index')
 @section('contentDashboard')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
     <section>
         <h3 class="border bg-light p-2 rounded-2 ">Table  Sortie de caisses vides </h3>
         <form action="{{url('SortieCaisseByCompagnie')}}" method="get">
@@ -15,11 +17,12 @@
                     </div>
                     <div class="col-sm-12 col-md-6 col-xl-6 ">
                         <button class="btn btn-secondary mr-3 float-end mt-4" type="submit">Recherche</button>
+                        <button class="btn btn-info mr-3 float-end mt-4 me-3" type="button" onclick="generatePDF()">Print</button>
                     </div>
             </div>
          </form>
          <div style="overflow-x: auto">
-            <table class="table table-striped table-bordered" >
+            <table class="table table-striped table-bordered" id="my-table">
                 <thead>
                     <tr>
                         <th rowspan="2">Date</th>
@@ -37,13 +40,9 @@
                         <tr>
                             <td style="white-space: nowrap">{{ $date }}</td>
                             @foreach ($clientsCaisseVide as $client)
-
                                 <td >{{intval($clientsData[$client]['nombre'])  }}</td>
-                                {{-- <td>{{intval($clientsData[$client]['Cuml'])  }}</td> --}}
-
                             @endforeach
                             <td >{{intval($totalsCaisseVide[$date]['totalNombre'])  }}</td>
-                            {{-- <td>{{ $totalsCaisseVide[$date]['totalCuml'] }}</td> --}}
                         </tr>
                     @endforeach
                 </tbody>
@@ -60,17 +59,17 @@
                             }
                             ?>
                             <td >{{ $sumNombre }}</td>
-                            {{-- <td >{{ $sumCuml }}</td> --}}
+
                         @endforeach
                         <td >{{ $totalsCaisseVide['grandTotalNombre'] }}</td>
-                        {{-- <td >{{ $totalsCaisseVide['grandTotalCuml'] }}</td> --}}
+
                     </tr>
                 </tfoot>
 
             </table>
          </div>
 
-       {{--  {{ $queryCaisseVide->links() }} --}}
+
     </section>
     <style>
         .listStockage .first-menu-item {
@@ -92,8 +91,91 @@
         }
 
     </style>
-
     <script>
+
+
+        function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'pt', 'a4');
+        const totalColumns = document.querySelectorAll('#my-table thead th').length - 2;
+        const maxColumnsPerPage = 10;
+        const pagesNeeded = Math.ceil(totalColumns / maxColumnsPerPage);
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        const currentDate = new Date().toLocaleDateString();
+
+        for (let page = 0; page < pagesNeeded; page++) {
+            const startColumn = page * maxColumnsPerPage;
+            const endColumn = Math.min(startColumn + maxColumnsPerPage, totalColumns);
+
+
+            const headerColumns = Array.from(document.querySelectorAll('#my-table thead th')).slice(startColumn + 1, endColumn + 1);
+
+
+            const headers = ["Date", ...headerColumns.map(th => th.innerText)];
+
+
+            const isLastPage = (page === pagesNeeded - 1);
+
+            if (isLastPage) {
+                headers.push("Total");
+            }
+
+
+            const rows = Array.from(document.querySelectorAll('#my-table tbody tr')).map(row => {
+                const cells = Array.from(row.querySelectorAll('td')).slice(startColumn + 1, endColumn + 1);
+                const rowData = [row.querySelector('td').innerText, ...cells.map(cell => cell.innerText)];
+                if (isLastPage) {
+                    rowData.push(row.querySelector('td:last-child').innerText);
+                }
+                return rowData;
+            });
+
+
+            const footerCells = Array.from(document.querySelectorAll('#my-table tfoot tr td')).slice(startColumn + 1, endColumn + 1);
+            const foot = [["Totaux", ...footerCells.map(td => td.innerText)]];
+            if (isLastPage) {
+                foot[0].push(document.querySelector('#my-table tfoot tr td:last-child').innerText);
+            }
+
+
+            doc.autoTable({
+                head: [headers],
+                body: rows,
+                foot: foot,
+                startY: page === 0 ? 40 : doc.lastAutoTable.finalY + 20,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 3,
+                    overflow: 'linebreak'
+                },
+                columnStyles: {
+                    0: {cellWidth: 'auto'},
+                },
+                margin: {top: 30, left: 10, right: 10},
+                didDrawPage: function (data) {
+
+                    doc.setFontSize(14);
+                    const title = "Table Sortie de caisses vides";
+                    const titleWidth = doc.getTextWidth(title);
+                    const titleX = (pageWidth - titleWidth) / 2;
+                    doc.setFillColor(240, 240, 240);
+                    doc.rect(titleX - 5, 10, titleWidth + 10, 20, 'F');
+                    doc.text(title, titleX, 25);
+
+
+                    doc.setFontSize(10);
+                    const dateWidth = doc.getTextWidth(currentDate);
+                    doc.text(currentDate, pageWidth - dateWidth - 10, 10);
+                }
+            });
+        }
+
+        doc.save('Table Sortie de caisses vides.pdf');
+    }
+    </script>
+    <script>
+
         $(document).ready(function () {
             var currentPath = window.location.pathname;
             var pathSegments = currentPath.split('/');
@@ -112,6 +194,13 @@
 
 
             }
+
         });
     </script>
 @endsection
+
+
+
+
+
+

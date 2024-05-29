@@ -119,14 +119,7 @@ class StockController extends Controller
         {
             $CompagnieIsActive = DB::select('select id from compagnies where active = "active" ');
 
-            /*$queryCaisseVide = DB::table('table_cumlcaissevides')
-            ->join('clients', 'table_cumlcaissevides.idclient', '=', 'clients.id')
-            ->select(
-                DB::raw('DATE_FORMAT(table_cumlcaissevides.dateoperation, "%d-%m-%Y") as dateoperation'),
-                 DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'), 'table_cumlcaissevides.cuml', 'table_cumlcaissevides.nombre')
-            ->where('table_cumlcaissevides.compagnie','=',$CompagnieIsActive[0]->id)
-            ->orderBy('table_cumlcaissevides.dateoperation', 'asc')
-            ->get();*/
+
 
              $queryCaisseVide = DB::table('table_cumlcaissevides as tcs')
             ->join('clients', 'tcs.idclient', '=', 'clients.id')
@@ -144,15 +137,7 @@ class StockController extends Controller
         else
         {
 
-            /*$queryCaisseVide = DB::table('table_cumlcaissevides')
-                ->join('clients', 'table_cumlcaissevides.idclient', '=', 'clients.id')
-                ->select(
-                    DB::raw('DATE_FORMAT(table_cumlcaissevides.dateoperation, "%d-%m-%Y") as dateoperation'),
-                    DB::raw('CONCAT(clients.nom, " ", clients.prenom) as client'),
-                     'table_cumlcaissevides.cuml', 'table_cumlcaissevides.nombre')
-                ->where('table_cumlcaissevides.compagnie','=',$request->compagnie)
-                ->orderBy('table_cumlcaissevides.dateoperation', 'asc')
-                ->get();*/
+
 
 
                  $queryCaisseVide = DB::table('table_cumlcaissevides as tcs')

@@ -421,7 +421,7 @@
                                 dataTableInitialized = true;
                                 var dataTable = $('#TableClientDashboardAdmin').DataTable({
 
-                                    "ordering": false,
+                                    "order": [[0, 'asc']],
                                     paging: false,
                                     "pageLength": -1,
                                     "select": {
