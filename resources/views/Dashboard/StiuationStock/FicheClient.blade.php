@@ -163,8 +163,9 @@
 
 
     <div class="p-2 bg-light border mt-3">
-        <p class=" fs-3">  Caisses vides chez client    = <span>{{$totalss['caisseVide'] - $totalss['caisseRetour']}}</span></p>
+        <p class=" fs-3">  Caisses vides retirées    = <span>{{$totalss['caisseVide'] - $totalss['caisseRetour']}}</span></p>
         <p class="fs-3"> Marachandise en stock= <span>{{$totalEntree - $totalSortie}}</span></p>
+        <p class="fs-3"> Caisses vides non remplis = <span>{{ ($totalss['caisseVide'] - $totalss['caisseRetour']) - ($totalEntree - $totalSortie)   }}</span></p>
     </div>
 
 
