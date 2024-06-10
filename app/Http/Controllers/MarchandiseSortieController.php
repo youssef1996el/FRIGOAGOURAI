@@ -52,11 +52,12 @@ class MarchandiseSortieController extends Controller
 
     public function StoreTmpMarchandiseSortie(Request $request)
     {
-        $checkProduitExiste = DB::select("select id,count(*) as c from tmpmarchandisesortie where produit = ?",[$request->produit]);
+        $checkProduitExiste = DB::select("select id,count(*) as c from tmpmarchandisesortie where produit = ? and iduser = ?",[$request->produit,Auth::user()->id]);
+       
         if($checkProduitExiste[0]->c != 0)
         {
-            $updateNbBox = DB::select("update tmpmarchandisesortie set nbbox = nbbox + ? where  id = ?",
-            [$request->nbbox,$checkProduitExiste[0]->id]);
+            $updateNbBox = DB::select("update tmpmarchandisesortie set nbbox = nbbox + ? where  id  = ? and iduser = ?",
+            [$request->nbbox,$checkProduitExiste[0]->id,Auth::user()->id]);
 
             return response()->json([
                 'status' =>         300,

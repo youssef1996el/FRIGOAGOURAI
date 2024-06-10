@@ -581,7 +581,7 @@ class ClientController extends Controller
 
         $NumberColSpanSortie = count($ColSpanSortiee);
 
-        usort($uniqueProductsSortie, function ($a, $b) {
+       /*  usort($uniqueProductsSortie, function ($a, $b) {
             return strcmp($a[0], $b[0]);
         });
 
@@ -591,7 +591,7 @@ class ClientController extends Controller
 
         usort($uniqueProductsEntree, function ($a, $b) {
             return strcmp($a[0], $b[0]);
-        });
+        }); */
 
 
         // Group data by date for easy iteration in the Blade file
